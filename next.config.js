@@ -5,6 +5,7 @@ const nextConfig = {
         path: 'http://localhost:3000/',
         path_media: 'http://localhost/energia/',
         api: 'http://localhost:5000/'
+        
     }
     
 

@@ -12,16 +12,16 @@ const AppMenu = () => {
 
     const model: AppMenuItem[] = [
         {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+            label: 'Principal',
+            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard' }]
         },
         {
-            label: 'UI Components',
+            label: 'Administrar',
             items: [
-                { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
-                { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
-                { label: 'Float Label', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
-                { label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
+                { label: 'Provincia', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
+                { label: 'Canton', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
+                { label: 'Sitio', icon: 'pi pi-fw pi-bookmark', to: '/uikit/floatlabel' },
+                { label: 'Censo solar', icon: 'pi pi-fw pi-exclamation-circle', to: '/uikit/invalidstate' },
                 { label: 'Button', icon: 'pi pi-fw pi-mobile', to: '/uikit/button', class: 'rotated-icon' },
                 { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
                 { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },

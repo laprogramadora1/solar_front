@@ -22,7 +22,7 @@ export async function getWithKey(recurso, llave) {
 
 export async function post(recurso, data) {
     const headers = {
-        'Accept': 'application/json',
+        
         "Content-Type": "application/json"
     };
     const response = await fetch(URL + recurso, {
@@ -40,7 +40,7 @@ export async function post(recurso, data) {
 
 export async function postWithKey(recurso, data, key) {
     const headers = {
-        'Accept': 'application/json',
+        
         "Content-Type": "application/json",
         "X-API-TOKEN": key
     };

@@ -12,6 +12,7 @@ import { Divider } from 'primereact/divider';
 import { LayoutContext } from '../../layout/context/layoutcontext';
 import { NodeRef } from '../../types/types';
 import { classNames } from 'primereact/utils';
+import {isSession} from "../../hooks/utiles/utiles";
 interface SimpleLayoutProps {
     children: React.ReactNode;
 }
@@ -24,14 +25,16 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
     const [isHidden, setIsHidden] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
     const menuRef = useRef<HTMLElement | null>(null);
-
     const toggleMenuItemClick = () => {
         setIsHidden((prevState) => !prevState);
     };
+    let verify = isSession();
+    
     return (
-        <div className="surface-0 flex justify-content-center">
-            <div id="home" className="landing-wrapper overflow-hidden">
-                <div style={{ background: "black" }} className="py-4 px-4 mx-0 md:mx-12 lg:mx-12 lg:px-8 flex align-items-center justify-content-between relative lg:static">
+        <div className="surface-0 flex justify-content-center" >
+            <div id="home"  className="landing-wrapper overflow-hidden">
+            
+                {verify == true && <div style={{ background: "black"}} className="py-4 px-4 mx-0 md:mx-12 lg:mx-12 lg:px-8 flex align-items-center justify-content-between relative lg:static">
                     <Link href={URL + ''} className="flex align-items-center">
                         <img src={URL_MEDIA + 'logo.png'} alt="Sakai Logo" height="90" className="mr-0 lg:mr-2" />
                         <span className="text-900  font-medium text-2xl line-height-3 mr-8" ><b style={{ color: "white" }}>AUTOCONSUMO FOTOVOLTAICO ECUADOR</b></span>
@@ -57,7 +60,7 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
                         </ul>
 
                     </div>
-                </div>
+                </div>}
                 <React.Fragment>
                     {children}
                     <AppConfig simple />

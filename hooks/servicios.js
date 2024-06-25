@@ -46,7 +46,13 @@ export async function sitiosPorCantonFuente(external, fuente) {
     return sitios;
 }
 
+
 export async function postCalculos(data) {
     var calculos = await post('calculos', data);
+    return calculos;
+}
+
+export async function totales() {
+    var calculos = await get('admin/total');
     return calculos;
 }
