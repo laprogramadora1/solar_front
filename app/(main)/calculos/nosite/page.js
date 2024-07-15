@@ -1,8 +1,14 @@
 "use client";
 import { decode as base64_decode, encode as base64_encode } from 'base-64';
+
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents, Popup } from 'react-leaflet'
+import "leaflet/dist/leaflet.css"
+import "leaflet-defaulticon-compatibility"
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
+
 //var utf8 = require('utf8');
 import { encode, decode } from 'utf8';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -16,26 +22,29 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 //import { provincias, cantonesPorProvincia, sitiosPorCanton, postCalculos } from '@/hooks/servicios';
-import { provincias, cantonesPorProvincia, sitiosSoloNombrePorCanton, postCalculos, fuentes, edificio, edificio_tarifa, tarifa, sito_censo_fuente } from '../../../hooks/servicios';
+import { provincias, cantonesPorProvincia, sitiosSoloNombrePorCanton, postCalculos, fuentes, edificio, edificio_tarifa, tarifa, postCalculosSinSitio } from '../../../../hooks/servicios';
 //import { Link } from 'components';
-import { Link } from 'next/link';
-import { Message } from 'primereact/message';
+
 import { Tag } from 'primereact/tag';
 import { useRouter } from 'next/navigation';
 import { Toast } from 'primereact/toast';
+import { Fieldset } from 'primereact/fieldset';
+import { Divider } from 'primereact/divider';
 //import { LayoutContext } from '../../../../layout/context/layoutcontext'; 
 //import { userService, alertService } from 'services';
 
 
 export default function Home() {
-    //
     const route = useRouter();
     const base_url = process.env.path;
     const myToast = useRef(null);
-    //
-    const [estadoP, setEstadoP] = useState(false);
-    const [sitio, setSitio] = useState("");
+
+
     //FORM
+    
+
+    let [meses, setMeses] = useState(null);
+    const [promedio, setPromedio] = useState(0.0);
     const [sliderValuePotenciaNominal, setSliderValuePotenciaNominal] = useState(0.0);
     const [sliderConsumoMensual, setSliderConsumoMensual] = useState(0.0);
     const [sliderDemanda, setSliderDemanda] = useState(0.0);
@@ -47,11 +56,9 @@ export default function Home() {
     const [sliderCosto, setSliderCosto] = useState(0.0);
     //sliderRendimiento
 
-    const [listaprovincia, setListaprovincia] = useState([]);
-    
-    const [sinDatos, setSinDatos] = useState(false);
-    const [listaCanton, setListaCanton] = useState([]);
-    const [listaSitios, setListaSitios] = useState([]);
+
+    const [estadoP, setEstadoP] = useState(false);
+
     const [listaFuentes, setListaFuentes] = useState([]);
     const [listaTarifa, setListaTarifa] = useState([]);
 
@@ -75,28 +82,41 @@ export default function Home() {
     const [costo, setCosto] = useState(0.0);
     const [retorno, setRetorno] = useState(0.0);
 
-    const changeSelectOptionHandlerP = (event) => {
-        setSinDatos(false);
-        setListaCanton([]);
-        setListaSitios([]);
-        setCalculos([]);
-        if (event.target.value) {
-            cantonesPorProvincia(event.target.value).then((info) => {
-                //console.log(info.props.data.datos.length+" **-*-*-*-");
-                if (info.props.data.message === 'OK') {
-                    setListaCanton(info.props.data.datos);
-                    if(info.props.data.datos.length <= 0) {
-                        myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay provincias" });
-                    }
-                } else {
-                    if(info.props.data.datos.length <= 0) {
-                        myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay provincias" });
-                    }
-                }
+    //MAPA
+    const [position, setPosition] = useState(null)
+    useEffect(() => {
+        let mes = {
+            "enero": 0.0,
+            "febrero": 0.0,
+            "marzo": 0.0,
+            "abril": 0.0,
+            "mayo": 0.0,
+            "junio": 0.0,
+            "julio": 0.0,
+            "agosto": 0.0,
+            "septiembre": 0.0,
+            "octubre": 0.0,
+            "noviembre": 0.0,
+            "diciembre": 0.0
+        };
+        reset(mes); setMeses(mes);
+
+        if ('geolocation' in navigator) {
+            // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
+            //console.log("Hola");
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
+                const { latitude, longitude } = coords;
+
+                setPosition({ lat: latitude, lng: longitude });
+            }, ({ error }) => {
+                //-3.9935012796787754, -79.2099205186457
+                setPosition({ lat: -3.9935012796787754, lng: -79.2099205186457 });
             });
+        } else {
+            setPosition({ lat: -3.9935012796787754, lng: -79.2099205186457 });
         }
-    };
-    
+    }, []);
+    //
 
     const changeSelectOptionTarifa = (event) => {
 
@@ -111,75 +131,8 @@ export default function Home() {
         }
     };
 
-    const changeSelectOptionHandlerC = (event) => {
-        setSinDatos(false);
-        setListaSitios([]);
-        setCalculos([]);
-        if (event.target.value) {
-            sitiosSoloNombrePorCanton(event.target.value).then((info) => {
-                console.log(info);
-                if (info.props.data.message === 'OK') {
-                    setListaSitios(info.props.data.datos);
-                    console.log(info.props.data.datos.length);
-                    if(info.props.data.datos.length <= 0) {
-                        myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay cantones" });
-                    }
-                }else {
-                    if(info.props.data.datos.length <= 0) {
-                        myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay cantones" });
-                    }
-                } 
-            });
-        }
-    };
-
-    ////// canton fuente
-    const changeSelectSite = (event) => {
-        setSinDatos(false);
-        if (event.target.value) {
-            let aux = base64_decode(event.target.value);
-            let arr = aux.split(";");
-            if(arr.length >= 3){
-                console.log("-y-y-y-y-y "+arr[2]);
-                setSitio(arr[2]);
-            }else{
-                setSitio("");
-                setSinDatos(false);
-            }
-            
-            //console.log("-y-y-y-y-y "+base64_decode(event.target.value));
-        }
-    };
-    const changeSelectFuente = (event) => {
-        setSinDatos(false);
-        if (event.target.value) {
-            sito_censo_fuente(sitio, event.target.value).then((info) => {
-                console.log("-------------FUENTES---------");
-                console.log(info);
-                if (info.props.data.message === 'OK') {
-                    //setListaEdificio(info.props.data.datos);
-                    if(info.props.data.datos.length > 0) {
-                        setSinDatos(true);
-                    } else {
-                        setSinDatos(false);
-                        myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay censos para esta fuente y parroquia" });
-                    }
-                    
-                } else {
-                    setSinDatos(false);
-                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "No hay censos para esta fuente y parroquia" });
-                }
-            });
-        }
-    };
-    ////
     if (!estadoP) {
-        provincias().then((info) => {
-            if (info.props.data.message === 'OK') {
-                setListaprovincia(info.props.data.datos);
-                setEstadoP(true);
-            }
-        });
+
 
         fuentes().then((info) => {
             if (info.props.data.message === 'OK') {
@@ -194,7 +147,7 @@ export default function Home() {
 
             }
         });
-
+        setEstadoP(true);
 
     }
 
@@ -205,9 +158,7 @@ export default function Home() {
         inclinacion: Yup.number()
             .required('se requiere la inclinacion'),
         orientacion: Yup.number()
-            .required('se requiere la orientacion'),
-        external: Yup.string()
-            .required('Se requiere el sitio'),
+            .required('se requiere la orientacion'),        
         tarifa: Yup.string()
             .required('Se requiere la tarifa'),
         fuente: Yup.string()
@@ -217,7 +168,7 @@ export default function Home() {
         potencia: Yup.number()
             .required('Se requiere la potencia'),
         eficiencia: Yup.number()
-            .required('Se requiere la eficiencia'),
+            .required('Se requiere la eficiencia'),        
         fs: Yup.number()
             .required('Se requiere el factor de sombras'),
         rendimiento: Yup.number()
@@ -226,19 +177,91 @@ export default function Home() {
             .required('Se requiere el costo de instalacion'),
         consumo_mensual: Yup.number()
             .required('Se requiere el consumo mensual'),
-        demanda_potencia_electronica: Yup.number()
-            .required('Se requiere la demanda de potencial electrico en KW')
+        demanda_potencia_electronica: Yup.number().required('Se requiere la demanda de potencial electrico en KW'),
+        irradiacion: Yup.number()
+            .required('Se requiere el promedio'),
+        enero: Yup.number().required('Ingrese un valor'),
+        febrero: Yup.number().required('Ingrese un valor'),
+        marzo: Yup.number().required('Ingrese un valor'),
+        abril: Yup.number().required('Ingrese un valor'),
+        mayo: Yup.number().required('Ingrese un valor'),
+        junio: Yup.number().required('Ingrese un valor'),
+        julio: Yup.number().required('Ingrese un valor'),
+        agosto: Yup.number().required('Ingrese un valor'),
+        septiembre: Yup.number().required('Ingrese un valor'),
+        octubre: Yup.number().required('Ingrese un valor'),
+        noviembre: Yup.number().required('Ingrese un valor'),
+        diciembre: Yup.number().required('Ingrese un valor') 
     });
+    //SUMAS
+    const sumas = function (value) {
+        //console.log(value.target.id+"  "+value.target.value);
+        if (value.target.id == 'enero') {
+            meses.enero = value.target.value * 1;
+        }
+        if (value.target.id == 'febrero') {
+            meses.febrero = value.target.value * 1;
+        }
+        if (value.target.id == 'marzo') {
+            meses.marzo = value.target.value * 1;
+        }
+        if (value.target.id == 'abril') {
+            meses.abril = value.target.value * 1;
+        }
+        if (value.target.id == 'mayo') {
+            meses.mayo = value.target.value * 1;
+        }
+        if (value.target.id == 'junio') {
+            meses.junio = value.target.value * 1;
+        }
+        if (value.target.id == 'julio') {
+            meses.julio = value.target.value * 1;
+        }
+        if (value.target.id == 'agosto') {
+            meses.agosto = value.target.value * 1;
+        }
+        if (value.target.id == 'septiembre') {
+            meses.septiembre = value.target.value * 1;
+        }
+        if (value.target.id == 'octubre') {
+            meses.octubre = value.target.value * 1;
+        }
+        if (value.target.id == 'noviembre') {
+            meses.noviembre = value.target.value * 1;
+        }
+        if (value.target.id == 'diciembre') {
+            meses.diciembre = value.target.value * 1;
+        }
+        var suma = 0.0;
+        for (var m in meses) {
+            //console.log(meses[m]);
+            suma += meses[m];
+        }
+        suma = suma / 12;
+        suma = Math.round(suma * 100) / 100;
+        reset({ "promedio": suma });
+        setPromedio(suma);
+        //setIrra(suma);
+        
+        //suma = meses.enero+meses.febrero+meses.marzo+meses.abril+meses.mayo
+
+    }
+    //FIN SUMAS
+    const formOptions = { resolver: yupResolver(validationSchema) };
+    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
+    const { errors } = formState;
 
     const onSubmit = (data) => {
+        
+        console.log("-*-*-*-**");
         var tar = listaTarifa.find(dat => dat.external == data.tarifa);
-        //console.log(data.orientacion);
+        console.log("-*-*-*-**");
         var datos = {
             "coef_reflexion": data.coef_reflexion,
             "inclinacion": data.inclinacion,
             "orientacion": data.orientacion,
             "potencia": data.potencia,
-            "external": data.external,
+            "irradiacion": data.irradiacion,
             "eficiencia": data.eficiencia,
             "fuente": data.fuente,
             "fs": data.fs,
@@ -246,10 +269,28 @@ export default function Home() {
             "tipo_edificio": tar.nombre + " " + data.edificio,
             "costo_instalacion": data.costo_instalacion,
             "consumo_mensual": data.consumo_mensual,
-            "demanda_potencia_electronica": data.demanda_potencia_electronica
+            "demanda_potencia_electronica": data.demanda_potencia_electronica,
+            "lng": position.lng,
+            "lat": position.lat,
+            "meses": {
+                "enero": data.enero,
+                "febrero": data.febrero,
+                "marzo": data.marzo,
+                "abril": data.abril,
+                "mayo": data.mayo,
+                "junio": data.junio,
+                "julio": data.julio,
+                "agosto": data.agosto,
+                "septiembre": data.septiembre,
+                "octubre": data.octubre,
+                "noviembre": data.noviembre,
+                "diciembre": data.diciembre,
+                "promedio": data.promedio                
+            }
         };
-        
-        postCalculos(datos).then((info) => {
+        console.log("****************");
+        console.log(datos);
+        postCalculosSinSitio(datos).then((info) => {
             console.log(info);
             if (info.props.datos.message === 'OK') {
                 console.log("calculos");
@@ -410,23 +451,14 @@ export default function Home() {
         //console.log(datos);
     }
 
-    const formOptions = { resolver: yupResolver(validationSchema) };
-
-    // set default form values if in edit mode
-    //if (!isAddMode) {
-    //  formOptions.defaultValues = props.user;
-    //}
-
-    // get functions to build form with useForm() hook
-    const { register, handleSubmit, reset, formState, setValue } = useForm(formOptions);
-    const { errors } = formState;
+    
 
     //const { register, handleSubmit, formState: { errors } } = useForm();
     //onSubmit={handleSubmit(onSubmit)}
     //VARIABLES
     const URL = process.env.path;
     const URL_MEDIA = process.env.path_media;
-    
+
     return (
         <main className="col-12">
             <Toast ref={myToast} />
@@ -442,45 +474,258 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Provincia</label>
+                                            <label>Sitio</label>
+                                            <Fieldset legend="Ingrese el sitio" toggleable collapsed={true}>
+                                                <div className="form-group row" style={{ marginBottom: "10px" }}>
+                                                    {position && <MapContainer
+                                                        whenReady={(map) => {
+                                                            map.target.on("click", function (e) {
+                                                                
+                                                                const { lat, lng } = e.latlng;
+                                                                setPosition({ lat: lat, lng: lng });
+                                                                map.target.eachLayer((layer) => {
+                                                                    if (layer instanceof L.Marker) {
+                                                                        layer.remove();
+                                                                    }
+                                                                });
+                                                                L.marker([lat, lng]).addTo(map.target);
+                                                            });
+                                                        }}
 
-                                            <select name="provincia" {...register('provincia')} className={`p-dropdown p-component p-inputtext ${errors.provincia ? 'p-invalid' : ''}`} onChange={changeSelectOptionHandlerP}>
-                                                <option>Seleccione una provincia</option>
-                                                {listaprovincia.map((prov, i) => (
-                                                    <option key={i} value={prov.external}>{prov.nombre}</option>
+                                                        center={position} zoom="15" style={{ height: '200px' }}>
+                                                        <div className='col'>
+                                                            <TileLayer
+                                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                                                            />
+                                                        </div>
 
-                                                ))}
-                                            </select>
-                                            <div className="p-error">{errors.firstName?.message}</div>
+                                                        {position === null ? null : (
+                                                            <Marker position={position}>
+                                                                <Popup>You are here</Popup>
+                                                            </Marker>)}
+                                                    </MapContainer>}
+                                                    <div className="col-sm-10">
+                                                        <InputText value={position && position.lng} defaultValue={position && position.lng} type="text" readOnly {...register('lng')} className="form-control form-control-lg" id="colFormLabelLg" placeholder="Ingrese longitud" />
+                                                        {errors.lon && <div className='text-xs inline-block py-1 px-2 rounded text-red-600 '>{errors.lng?.message}</div>}
+                                                    </div>
+                                                    <div className="col-sm-10">
+                                                        <InputText defaultValue={position && position.lat} value={position && position.lat} type="text" readOnly {...register('lat')} className="form-control form-control-lg" id="colFormLabelLg2" placeholder="Ingrese latitud" />
+                                                        {errors.lat && <div className='text-xs inline-block py-1 px-2 rounded text-red-600 '>{errors.lat?.message}</div>}
+                                                    </div>
+                                                </div>
+                                            </Fieldset>
                                         </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione el canton</label>
-                                            <select name="canton" {...register('canton')} className={`p-dropdown p-component p-inputtext ${errors.canton ? 'p-invalid' : ''}`} onChange={changeSelectOptionHandlerC}>
-                                                <option>Seleccione un canton</option>
-                                                {listaCanton.map((cant, i) => (
-                                                    <option key={i} value={cant.external}>{cant.nombre}</option>
+                                            <label>Ingrese la irradiacion por mes</label>
+                                            <Fieldset legend="Ingrese irradiacion por mes" toggleable collapsed={true}>
 
-                                                ))}
-                                            </select>
-                                            <div className="p-error">{errors.canton?.message}</div>
+                                                <div className="flex flex-column md:flex-row">
+                                                    <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
+                                                        <div className=' p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="enero" className="p-col-fixed" ><b>Enero</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="enero" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de enero'
+                                                                        defaultValue={meses && meses.enero}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('enero')}
+                                                                    />
+                                                                </div>
+                                                                {errors.enero && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.enero?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="febrero" className="p-col-fixed" ><b>Febrero</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="febrero" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de febrero'
+                                                                        defaultValue={meses && meses.febrero}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('febrero')}
+                                                                    />
+                                                                </div>
+                                                                {errors.febrero && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.febrero?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="marzo" className="p-col-fixed" ><b>Marzo</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="marzo" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de marzo'
+                                                                        defaultValue={meses && meses.marzo}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('marzo')}
+                                                                    />
+                                                                </div>
+                                                                {errors.marzo && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.marzo?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="abril" className="p-col-fixed" ><b>Abril</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="abril" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de abril'
+                                                                        defaultValue={meses && meses.abril}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('abril')}
+                                                                    />
+                                                                </div>
+                                                                {errors.abril && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.abril?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="mayo" className="p-col-fixed" ><b>Mayo</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="mayo" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de enero'
+                                                                        {...register('mayo')}
+                                                                        defaultValue={meses && meses.mayo}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                    />
+                                                                </div>
+                                                                {errors.mayo && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.mayo?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="junio" className="p-col-fixed" ><b>Junio</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="junio" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de junio'
+                                                                        defaultValue={meses && meses.junio}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('junio')}
+                                                                    />
+                                                                </div>
+                                                                {errors.junio && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.junio?.message}</small>}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full md:w-2">
+                                                        <Divider layout="vertical" className="hidden md:flex">
+                                                            <b></b>
+                                                        </Divider>
+                                                        <Divider layout="horizontal" className="flex md:hidden" align="center">
+                                                            <b></b>
+                                                        </Divider>
+                                                    </div>
+                                                    <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
+                                                        <div className=' p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="julio" className="p-col-fixed" ><b>Julio</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="julio" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de julio'
+                                                                        defaultValue={meses && meses.julio}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('julio')}
+                                                                    />
+                                                                </div>
+                                                                {errors.julio && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.julio?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="agosto" className="p-col-fixed" ><b>Agosto</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="agosto" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de agosto'
+                                                                        defaultValue={meses && meses.agosto}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('agosto')}
+                                                                    />
+                                                                </div>
+                                                                {errors.agosto && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.agosto?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="septiembre" className="p-col-fixed" ><b>Septiembre</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="septiembre" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de septiembre'
+                                                                        defaultValue={meses && meses.septiembre}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('septiembre')}
+                                                                    />
+                                                                </div>
+                                                                {errors.septiembre && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.septiembre?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="octubre" className="p-col-fixed" ><b>Octubre</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="octubre" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de octubre'
+                                                                        defaultValue={meses && meses.octubre}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('octubre')}
+                                                                    />
+                                                                </div>
+                                                                {errors.octubre && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.octubre?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="noviembre" className="p-col-fixed" ><b>Noviembre</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="noviembre" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de noviembre'
+                                                                        defaultValue={meses && meses.noviembre}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('noviembre')}
+                                                                    />
+                                                                </div>
+                                                                {errors.noviembre && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.noviembre?.message}</small>}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='p-col-fixed'>
+                                                            <div className="p-field p-grid" style={{ margin: "10px" }}>
+                                                                <label htmlFor="diciembre" className="p-col-fixed" ><b>Diciembre</b></label>
+                                                                <div className="p-col">
+                                                                    <InputText id="diciembre" type="text" style={{ marginTop: "10px" }}
+                                                                        placeholder='Ingrese el valor de diciembre'
+                                                                        defaultValue={meses && meses.diciembre}
+                                                                        onKeyUp={(e) => sumas(e)}
+                                                                        {...register('diciembre')}
+                                                                    />
+                                                                </div>
+                                                                {errors.diciembre && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.diciembre?.message}</small>}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <InputText {...register('promedio')} value={promedio} name="promedio" readOnly type="text" className={`form-control ${errors.promedio ? 'p-invalid' : ''}`} />
+                                                <div className="p-error">{errors.promedio?.message}</div>
+                                            </Fieldset>
                                         </div>
                                     </div>
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione la parroquia (lugar)</label>
-                                            <select name="external" {...register('external', {
-                                                required: true
-                                            })} className={`p-dropdown p-component p-inputtext ${errors.external ? 'p-invalid' : ''}`} onChange={changeSelectSite}>
-                                                <option value="">Seleccione la parroquia (lugar)</option>
-                                                {listaSitios.map((sit, i) => (
-                                                    <option key={i} value={base64_encode(encode(sit.nombre) + ';' + sit.canton+';'+sit.external+';')}>{sit.nombre}</option>
+                                            <label>Ingrese irradiacion del total sitio</label>
+                                            <InputText {...register('irradiacion')} name="irradiacion" type="text" className={`form-control ${errors.irradiacion ? 'p-invalid' : ''}`} />
+                                            <div className="p-error">{errors.irradiacion?.message}</div>
 
-                                                ))}
-                                            </select>
-                                            <div className="p-error">{errors.external?.message}</div>
                                         </div>
                                     </div>
 
@@ -490,7 +735,7 @@ export default function Home() {
                                             <label>Seleccione la fuente</label>
                                             <select name="fuente" {...register('fuente', {
                                                 required: true
-                                            })} className={`p-dropdown p-component p-inputtext ${errors.fuente ? 'p-invalid' : ''}`} onChange={changeSelectFuente}>
+                                            })} className={`p-dropdown p-component p-inputtext ${errors.fuente ? 'p-invalid' : ''}`} >
                                                 <option value="">Seleccione una fuente</option>
                                                 {listaFuentes.map((sit, i) => (
                                                     <option key={i} value={sit.key}>{sit.value}</option>
@@ -642,9 +887,9 @@ export default function Home() {
                     </div>
                     <div className='card'>
                         <div className='card-body'>
-                            {sinDatos == true && <div className="formgrid grid" >
+                            <div className="formgrid grid">
                                 <div className="field col">
-                                    <Button  severity="danger" type="submit" disabled={formState.isSubmitting} className="mr-2">
+                                    <Button severity="danger" type="submit" disabled={formState.isSubmitting} className="mr-2">
                                         {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
                                         Calcular
                                     </Button>
@@ -653,16 +898,7 @@ export default function Home() {
                                     <Button severity="secondary" onClick={() => reset(formOptions.defaultValues)} type="button" disabled={formState.isSubmitting} className="btn btn-danger">Nuevo calculo</Button>
 
                                 </div>
-                            </div>}
-
-                            {sinDatos == false && <div className="formgrid grid" >
-                                
-                                <div className="field col">
-                                    <Button severity="secondary" onClick={() => route.push(base_url+'calculos/nosite')} type="button" disabled={formState.isSubmitting} className="btn btn-danger">Calculos con valores propios</Button>
-
-                                </div>
-                            </div>}
-
+                            </div>
                         </div>
 
 

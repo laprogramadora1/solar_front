@@ -1,5 +1,16 @@
 //import { data } from "browserslist";
 import { get,post } from "./conexion";
+
+export async function inicio() {
+    var provincias = await get('inicio');
+    return provincias;
+}
+
+export async function sesion(datos) {
+    var provincias = await post('sesion', datos);
+    return provincias;
+}
+
 export async function provincias() {
     var provincias = await get('provincia');
     return provincias;
@@ -12,6 +23,11 @@ export async function cantonesPorProvincia(external) {
 
 export async function fuentes() {
     var fuentes = await get('fuentes');
+    return fuentes;
+}
+
+export async function meses() {
+    var fuentes = await get('meses');
     return fuentes;
 }
 
@@ -52,7 +68,17 @@ export async function postCalculos(data) {
     return calculos;
 }
 
+export async function postCalculosSinSitio(data) {
+    var calculos = await post('calculos/sinsitio', data);
+    return calculos;
+}
+
 export async function totales() {
     var calculos = await get('admin/total');
+    return calculos;
+}
+
+export async function sito_censo_fuente(external_sito, fuente) {
+    var calculos = await get('sitio/censo/'+external_sito+"/"+fuente);
     return calculos;
 }

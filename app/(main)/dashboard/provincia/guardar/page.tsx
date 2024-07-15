@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import { Card } from 'primereact/card';
 import { save } from '../../../../../hooks/servicioProvincia';
 import { Toast } from 'primereact/toast';
+import { get } from '../../../../../hooks/utiles/utiles';
+import message from '../../../../../component/message';
 const GuardarProvincia = () => {
     const ruote = useRouter();
     const base_url = process.env.path;
@@ -30,14 +32,23 @@ const GuardarProvincia = () => {
     const sendInfo = (datos) => {
         //{"email":"xxxx", "passsword":"xxxxxx"}
         console.log(datos);
-        save(datos,"").then((data) => {
+        save(datos, get("token")).then((data) => {
             console.log(data.props.datos);
             const info = data.props.datos;
-            if(info.code == '200'){
-                myToast.current?.show({severity: "success", summary: "Respuesta", detail: info.datos}); 
-                ruote.push(base_url+"dashboard/provincia");
-            } else{
-                myToast.current?.show({severity: "error", summary: "Respuesta", detail: "Faltan datos"}); 
+            if (info.code == '200') {
+                myToast.current?.show({ severity: "success", summary: "Respuesta", detail: info.datos });
+                message("Provincia registrada", "Operacion exitosa!");
+                ruote.push(base_url + "dashboard/provincia");
+            } else {
+                if (info.code == '401') {
+                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
+                    ruote.push(base_url + "auth/login");
+                } else if(info.code == '406'){
+                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: info.datos });
+                } 
+                else {
+                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "Faltan datos" });
+                }
             }
             //setSitio(data.props.data.datos);
         });

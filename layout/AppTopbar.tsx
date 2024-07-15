@@ -7,6 +7,7 @@ import { AppTopbarRef } from '../types/types';
 import { LayoutContext } from './context/layoutcontext';
 import { removeKey } from '../hooks/utiles/utiles';
 import { useRouter } from 'next/navigation';
+import { Tooltip } from 'primereact/tooltip';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
@@ -23,7 +24,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const close = () => {
         //console.log("HOLA");
         removeKey('token');
-        removeKey('user');    
+        removeKey('user');
+        removeKey('permiso');    
         router.push('/auth/login');    
     }
     return (
@@ -40,23 +42,23 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
             <button ref={topbarmenubuttonRef} type="button" className="p-link layout-topbar-menu-button layout-topbar-button" onClick={showProfileSidebar}>
                 <i className="pi pi-ellipsis-v" />
             </button>
-
+            <Tooltip target=".perfil" mouseTrack mouseTrackLeft={10} position='left'/>
             <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
-
-                <button type="button" className="p-link layout-topbar-button">
+                
+                <button type="button" onClick={(e)=>router.push('/dashboard/perfil')}  className="p-link layout-topbar-button perfil" data-pr-tooltip="Perfil">
                     <i className="pi pi-user"></i>
-                    <span>Profile</span>
+                    <span>Perfil</span>
                 </button>
                
                     <button onClick={() => {
                         const confirmBox = window.confirm(
-                            "Do you really want to delete this Crumb?"
+                            "Desea salir del sistema?"
                         )
                         if (confirmBox === true) {
                             close();
 
                         }
-                    }} type="button" className="p-link layout-topbar-button">
+                    }} type="button" className="p-link layout-topbar-button perfil"  data-pr-tooltip='Cerrar'>
                         <i className="pi pi-power-off"></i>
                         <span>Salir</span>
                     </button>

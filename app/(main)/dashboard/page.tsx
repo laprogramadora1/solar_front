@@ -13,28 +13,11 @@ import { Demo } from '../../../types/types';
 import { ChartData, ChartOptions } from 'chart.js';
 import { sitios } from '../../../hooks/servicioSitio';
 import { totales } from '../../../hooks/servicios';
+import { get, isSession } from '../../../hooks/utiles/utiles';
+import { useRouter } from 'next/navigation';
+import message from '../../../component/message';
 
-const lineData: ChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4
-        },
-        {
-            label: 'Second Dataset',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4
-        }
-    ]
-};
+
 
 const Dashboard = () => {
     //const [products, setProducts] = useState<Demo.Product[]>([]);
@@ -44,7 +27,13 @@ const Dashboard = () => {
     const menu2 = useRef<Menu>(null);
     const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
-
+    const base_url = process.env.path;
+    const route = useRouter();
+    //route.refresh();
+    let aux = isSession();
+    if (!aux) {
+        route.push(base_url + "auth/login");
+    }
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
             plugins: {
@@ -109,19 +98,29 @@ const Dashboard = () => {
         setLineOptions(lineOptions);
     };
 
-    useEffect(() => {        
+    useEffect(() => {
         totales().then((data) => {
             console.log(data.props.data);
             setTotal(data.props.data.datos);
-        }); 
+        });
     }, []);
 
     useEffect(() => {
-        sitios().then((data) => {
-            console.log(data.props.data);
-            setSitio(data.props.data.datos);
-        }); 
-         
+        //KEY get("token")
+        sitios(get("token")).then((data) => {
+            console.log("XXXX");
+            //console.log(data.props);
+            if(data.props.data.code == '200'){
+                setSitio(data.props.data.datos);
+            } else {
+                if(data.props.data.code =='401') {
+                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
+                    route.push(base_url + "auth/login");
+                }
+            }
+            
+        });
+
     }, []);
 
     useEffect(() => {
@@ -204,19 +203,19 @@ const Dashboard = () => {
 
             <div className="col-12 xl:col-12">
                 <div className="card">
-                    <h5>Parroquias registradas</h5>
-                    {sitio && <DataTable value={sitio}   rows={10} paginator responsiveLayout="scroll">
-                        <Column  body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }}/>
+                    <h5>Parroquias (Sitios) registradas</h5>
+                    {sitio && <DataTable value={sitio} rows={10} paginator responsiveLayout="scroll">
+                        <Column body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }} />
                         <Column field="nombre" header="Sitio" sortable style={{ width: '35%' }} />
-                        <Column field="canton" header="Canton" sortable style={{ width: '25%' }}  />
-                        <Column field="provincia" header="Provicia" sortable style={{ width: '25%' }}  />
-                        
+                        <Column field="canton" header="Canton" sortable style={{ width: '25%' }} />
+                        <Column field="provincia" header="Provicia" sortable style={{ width: '25%' }} />
+
                     </DataTable>}
                 </div>
-                
+
             </div>
 
-            
+
         </div>
     );
 };

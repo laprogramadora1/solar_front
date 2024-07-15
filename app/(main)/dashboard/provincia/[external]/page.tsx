@@ -12,15 +12,25 @@ import { useForm } from 'react-hook-form';
 import { Card } from 'primereact/card';
 import { getProvincias, update } from '../../../../../hooks/servicioProvincia';
 import { Toast } from 'primereact/toast';
+import { get } from '../../../../../hooks/utiles/utiles';
+import message from '../../../../../component/message';
 const ModificarProvincia = ({params}) => {
     const ruote = useRouter();
     const base_url = process.env.path;
     const external = params.external;
     let[obj, setObj] = useState(null);
     useEffect(() => {
-        getProvincias(external,"").then((data) => {
+        getProvincias(external, get("token")).then((data) => {
             console.log(data.props.data);
-            setObj(data.props.data.datos);
+            if(data.props.data.code=='200'){
+                setObj(data.props.data.datos);
+            } else {
+                if(data.props.data.code == '401') {
+                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
+                    ruote.push(base_url + "auth/login");
+                }
+            }
+            
         });
 
     }, []);
@@ -41,11 +51,12 @@ const ModificarProvincia = ({params}) => {
         //{"email":"xxxx", "passsword":"xxxxxx"}
         const aux = {"nombre":datos.nombre,"external":external}
         console.log(aux);
-        update(aux,"").then((data) => {
+        update(aux, get("token")).then((data) => {
            
             const info = data.props.datos;
             if(info.code == '200'){
-                myToast.current?.show({severity: "success", summary: "Respuesta", detail: info.datos}); 
+                message("Provincia modificada", "Operacion exitosa!");
+                //myToast.current?.show({severity: "success", summary: "Respuesta", detail: info.datos}); 
                 ruote.push(base_url+"dashboard/provincia");
             } else{
                 myToast.current?.show({severity: "error", summary: "Respuesta", detail: "Faltan datos"}); 

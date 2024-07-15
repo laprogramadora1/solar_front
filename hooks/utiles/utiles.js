@@ -1,6 +1,11 @@
 
 'use client';
 import Cookies from "js-cookie";
+
+export const add = (key, value) =>{
+    Cookies.set(key, value);
+}
+
 export const get = (key) => {
     return Cookies.get(key);    
 }

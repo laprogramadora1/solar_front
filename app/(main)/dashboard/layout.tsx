@@ -1,5 +1,9 @@
+
 import { Metadata } from 'next';
 import Layout from '../../../layout/layout';
+
+import { isSession } from '../../../hooks/utiles/utiles';
+import { useRouter } from 'next/navigation';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -24,5 +28,7 @@ export const metadata: Metadata = {
 };
 
 export default function AppLayout({ children }: AppLayoutProps) {
+    
+    
     return <Layout>{children}</Layout>;
 }

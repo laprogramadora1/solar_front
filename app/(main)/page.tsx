@@ -1,25 +1,27 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import solar_foto from '../../public/img/sol.jpg'; 
-import { StyleClass } from 'primereact/styleclass';
-import { Button } from 'primereact/button';
-import { Ripple } from 'primereact/ripple';
-import { Divider } from 'primereact/divider';
+
 import { LayoutContext } from '../../layout/context/layoutcontext';
-import { NodeRef } from '../../types/types';
-import { classNames } from 'primereact/utils';
+
+import { inicio } from '../../hooks/servicios';
+
 
 const LandingPage = () => {
     const [isHidden, setIsHidden] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
     const menuRef = useRef<HTMLElement | null>(null);
-
+    const URL = process.env.path;
     const toggleMenuItemClick = () => {
         setIsHidden((prevState) => !prevState);
     };
 
+    useEffect(() => {
+        inicio().then((data) => {            
+        });
+    }, []);
+    
     return (
 
         <div id="home" className="landing-wrapper overflow-hidden">
@@ -31,7 +33,7 @@ const LandingPage = () => {
                 style={{
                     background: 'linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%)',
                     clipPath: 'ellipse(150% 87% at 93% 13%)',
-                    backgroundImage: 'url("img/solar.png")'
+                    backgroundImage: 'url('+'"'+URL+'/img/solar.png")'
                 }}
             >
                 <div className="col-4 mx-4 md:mx-8 mt-0 md:mt-4 card">
