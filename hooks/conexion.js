@@ -1,5 +1,5 @@
 //let URL = "https://computacion.unl.edu.ec/pdml/solar_back/api/";
-let URL = "http://localhost:5000/api/";
+let URL = process.env.api;//"http://localhost:5000/api/";
 export async function get(recurso) {
     const response = await fetch(URL + recurso);
     try {

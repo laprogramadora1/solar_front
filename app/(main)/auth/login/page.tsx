@@ -42,8 +42,9 @@ const LoginPage = () => {
     
 
     const sendInfo = (datos) => {
-        
-        sesion(datos).then((data) => {
+        //let datitos = datos;
+        const datito = {"correo": datos.correo,"clave":datos.clave};    
+        sesion(datito).then((data) => {
            
             const info = data.props.datos;
             if (info.code == '200') {

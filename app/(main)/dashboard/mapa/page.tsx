@@ -84,7 +84,7 @@ const Mapa = () => {
                                 />
                             </div>
                             {sitio && sitio.map((dato, i) => (
-                                <Marker position={{ lat: dato.latitud, lng: dato.longitud }}>
+                                <Marker key={i} position={{ lat: dato.latitud, lng: dato.longitud }}>
                                     <Popup>{dato.nombre}</Popup>
                                 </Marker>
                             ))}
