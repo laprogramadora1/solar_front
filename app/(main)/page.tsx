@@ -33,7 +33,7 @@ const LandingPage = () => {
                 style={{
                     background: 'linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%)',
                     clipPath: 'ellipse(150% 87% at 93% 13%)',
-                    backgroundImage: 'url('+'"'+URL+'/img/solar.png")'
+                    backgroundImage: 'url('+'"'+URL+'img/solar.png")'
                 }}
             >
                 <div className="col-4 mx-4 md:mx-8 mt-0 md:mt-4 card">

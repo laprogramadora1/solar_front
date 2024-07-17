@@ -111,7 +111,7 @@ const LoginPage = () => {
 
                                 <div className="flex align-items-center justify-content-between mb-5 gap-5">
 
-                                    <a href={base_url+"/"} className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                                    <a href={base_url} className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
                                         Regresar al inicio
                                     </a>
                                 </div>
