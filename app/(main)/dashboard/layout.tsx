@@ -1,4 +1,4 @@
-
+'use client';
 import { Metadata } from 'next';
 import Layout from '../../../layout/layout';
 
@@ -9,7 +9,7 @@ interface AppLayoutProps {
     children: React.ReactNode;
 }
 
-export const metadata: Metadata = {
+/*export const metadata: Metadata = {
     title: 'Calculadora solar',
     description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.',
     robots: { index: false, follow: false },
@@ -25,10 +25,8 @@ export const metadata: Metadata = {
     icons: {
         icon: '/favicon.ico'
     }
-};
+};*/
 
 export default function AppLayout({ children }: AppLayoutProps) {
-    
-    
     return <Layout>{children}</Layout>;
 }

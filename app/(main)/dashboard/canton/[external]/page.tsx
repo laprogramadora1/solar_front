@@ -7,7 +7,7 @@ import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
 import { InputText } from 'primereact/inputtext';
 import * as Yup from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Card } from 'primereact/card';
 import { getProvincias, provincias_activate } from '../../../../../hooks/servicioProvincia';
@@ -24,11 +24,11 @@ const ModificarCanton = ({ params }) => {
     const external = params.external;
     let [provincia, setProvincias] = useState([]);
     let [canton, setCanton] = useState([]);
-    let [prov, setProv] = useState("");
+    let [prov, setProv] = useState('');
     const [globalFilter, setGlobalFilter] = useState('');
     let [obj, setObj] = useState(null);
     useEffect(() => {
-        getCantones(external, get("token")).then((data) => {
+        getCantones(external, get('token')).then((data) => {
             console.log(data);
             if (data.props.data.code == '200') {
                 console.log(data.props.data);
@@ -36,17 +36,15 @@ const ModificarCanton = ({ params }) => {
                 setProv(data.props.data.datos.provincia);
                 list_canton(data.props.data.datos.provincia);
             } else {
-                if(data.props.data.code == '401') {
+                if (data.props.data.code == '401') {
                     //myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
-                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
-                    ruote.push(base_url + "auth/login");
-                } else{
-                    myToast.current?.show({ severity: "error", summary: "Error", detail: data.props.data.datos });
+                    message('Token no existe, inicie sesion', 'Error de verificacion', 'error');
+                    ruote.push(base_url + 'auth/login');
+                } else {
+                    myToast.current?.show({ severity: 'error', summary: 'Error', detail: data.props.data.datos });
                 }
             }
-
         });
-
     }, []);
     //console.log(params.external);
     /* 
@@ -63,34 +61,35 @@ const ModificarCanton = ({ params }) => {
     const myToast = useRef(null);
 
     useEffect(() => {
-        provincias_activate(get("token")).then((data) => {
+        provincias_activate(get('token')).then((data) => {
             console.log(data.props.data);
-            if(data.props.data.code == '200') {
+            if (data.props.data.code == '200') {
                 let datito = [];
-            var i = 0;
-            data.props.data.datos.forEach(element => {
-                datito[i] = { "label": element.nombre, "value": element.external };
-                i++;
-            });
-            setProvincias(datito);
-            }else{
-                if(data.props.data.code == '401') {
+                var i = 0;
+                data.props.data.datos.forEach((element) => {
+                    datito[i] = { label: element.nombre, value: element.external };
+                    i++;
+                });
+                setProvincias(datito);
+            } else {
+                if (data.props.data.code == '401') {
                     //myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
-                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
-                    ruote.push(base_url + "auth/login");
+                    message('Token no existe, inicie sesion', 'Error de verificacion', 'error');
+                    ruote.push(base_url + 'auth/login');
                 }
             }
         });
     }, []);
-    //CARGAR CANTONES 
+    //CARGAR CANTONES
     const list_canton = function (valor) {
         //if (prov) {
-        cantones_provincia(valor, get("token")).then((data) => {
+        cantones_provincia(valor, get('token')).then((data) => {
             if (data.props.data.code == '200') {
                 setCanton(data.props.data.datos);
-            } else { setCanton([]); 
-                if(data.props.data.code == '401') {
-                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
+            } else {
+                setCanton([]);
+                if (data.props.data.code == '401') {
+                    myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: data.props.data.datos.error });
                 }
             }
 
@@ -106,16 +105,16 @@ const ModificarCanton = ({ params }) => {
         //  }
     };
     const sendInfo = (datos) => {
-        const aux = { "external": prov, "nombre": datos.nombre, "external_canton":external };
+        const aux = { external: prov, nombre: datos.nombre, external_canton: external };
         console.log(aux);
-        update(aux, get("token")).then((data) => {
+        update(aux, get('token')).then((data) => {
             console.log(data.props.datos);
             const info = data.props.datos;
             if (info.code == '200') {
-                myToast.current?.show({ severity: "success", summary: "Respuesta", detail: info.datos });
-                ruote.push(base_url + "dashboard/canton");
+                myToast.current?.show({ severity: 'success', summary: 'Respuesta', detail: info.datos });
+                ruote.push(base_url + 'dashboard/canton');
             } else {
-                myToast.current?.show({ severity: "error", summary: "Respuesta", detail: "Faltan datos" });
+                myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: 'Faltan datos' });
             }
             //setSitio(data.props.data.datos);
         });
@@ -132,73 +131,65 @@ const ModificarCanton = ({ params }) => {
     );
 
     return (
-
         <div className="col-12 xl:col-12">
             <Toast ref={myToast} />
             <Card title="Editar cantones">
                 <div className="my-2">
                     <form onSubmit={handleSubmit(sendInfo)} className="p-fluid p-formgrid p-grid">
-                        <div className="p-field p-grid" style={{ margin: "10px" }}>
-                            <label htmlFor="firstname3" className="p-col-fixed" ><b>Nombre</b></label>
+                        <div className="p-field p-grid" style={{ margin: '10px' }}>
+                            <label htmlFor="firstname3" className="p-col-fixed">
+                                <b>Nombre</b>
+                            </label>
                             <div className="p-col">
-                                <Dropdown 
-                                    
+                                <Dropdown
                                     defaultValue={prov}
-                                    
                                     value={prov}
                                     options={provincia}
-                                    onChange={(e) => { setProv(e.value); list_canton(e.value) }}
-                                    placeholder="Seleccione una provincia" />
-                            </div>
-                           
-                        </div>
-                        <div className="p-field p-grid" style={{ margin: "10px" }}>
-                            <label htmlFor="firstname3" className="p-col-fixed" ><b>Nombre</b></label>
-                            <div className="p-col">
-                                <InputText id="firstname3" type="text" style={{ marginTop: "10px" }}
-                                    placeholder='Ingrese el nombre del canton'
-                                    {...register('nombre')}
-                                    defaultValue={obj && obj.nombre}
-                                    autoFocus
+                                    onChange={(e) => {
+                                        setProv(e.value);
+                                        list_canton(e.value);
+                                    }}
+                                    placeholder="Seleccione una provincia"
                                 />
                             </div>
-                            {errors.nombre && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.nombre?.message}</small>}
+                        </div>
+                        <div className="p-field p-grid" style={{ margin: '10px' }}>
+                            <label htmlFor="firstname3" className="p-col-fixed">
+                                <b>Nombre</b>
+                            </label>
+                            <div className="p-col">
+                                <InputText id="firstname3" type="text" style={{ marginTop: '10px' }} placeholder="Ingrese el nombre del canton" {...register('nombre')} defaultValue={obj && obj.nombre} autoFocus />
+                            </div>
+                            {errors.nombre && (
+                                <small style={{ marginTop: '10px' }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">
+                                    {errors.nombre?.message}
+                                </small>
+                            )}
                         </div>
 
-                        <div className="p-field p-col-12 p-md-3" style={{ margin: "10px" }}>
-                            <Button label="Guardar" icon="pi pi-check" type='submit' />
-                            <Button label="Cancelar" icon="pi pi-times" text onClick={(e) => { ruote.push(base_url + "dashboard/canton") }} />
-
+                        <div className="p-field p-col-12 p-md-3" style={{ margin: '10px' }}>
+                            <Button label="Guardar" icon="pi pi-check" type="submit" />
+                            <Button
+                                label="Cancelar"
+                                icon="pi pi-times"
+                                text
+                                onClick={(e) => {
+                                    ruote.push(base_url + 'dashboard/canton');
+                                }}
+                            />
                         </div>
-
-
                     </form>
                 </div>
                 <Card title="Cantones registrados a esas provincias">
-                    <DataTable value={canton}
-                        dataKey="external"
-                        rows={10} paginator responsiveLayout="scroll"
-                        emptyMessage="No hay datos."
-                        className="datatable-responsive"
-                        header={header}
-                        globalFilter={globalFilter}
-                    >
+                    <DataTable value={canton} dataKey="external" rows={10} paginator responsiveLayout="scroll" emptyMessage="No hay datos." className="datatable-responsive" header={header} globalFilter={globalFilter}>
                         <Column body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }} />
                         <Column field="nombre" header="Nombre" sortable style={{ width: '35%' }} />
                         <Column field="prov" header="Provincia" sortable style={{ width: '25%' }} />
                         <Column field="estado" header="Estado" style={{ width: '25%' }} />
-
-
-
-
                     </DataTable>
                 </Card>
             </Card>
-
-
-
         </div>
-
     );
 };
 export default ModificarCanton;

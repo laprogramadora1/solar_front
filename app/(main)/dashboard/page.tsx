@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
@@ -16,9 +15,6 @@ import { totales } from '../../../hooks/servicios';
 import { get, isSession } from '../../../hooks/utiles/utiles';
 import { useRouter } from 'next/navigation';
 import message from '../../../component/message';
-
-
-
 const Dashboard = () => {
     //const [products, setProducts] = useState<Demo.Product[]>([]);
     const [sitio, setSitio] = useState(null);
@@ -30,9 +26,13 @@ const Dashboard = () => {
     const base_url = process.env.path;
     const route = useRouter();
     //route.refresh();
+    useEffect(() => {
+        console.log(window.innerWidth);
+        console.log(window.innerHeight);
+    }, []);
     let aux = isSession();
     if (!aux) {
-        route.push(base_url + "auth/login");
+        route.push(base_url + 'auth/login');
     }
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
@@ -107,20 +107,18 @@ const Dashboard = () => {
 
     useEffect(() => {
         //KEY get("token")
-        sitios(get("token")).then((data) => {
-            console.log("XXXX");
+        sitios(get('token')).then((data) => {
+            console.log('XXXX');
             //console.log(data.props);
-            if(data.props.data.code == '200'){
+            if (data.props.data.code == '200') {
                 setSitio(data.props.data.datos);
             } else {
-                if(data.props.data.code =='401') {
-                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
-                    route.push(base_url + "auth/login");
+                if (data.props.data.code == '401') {
+                    message('Token no existe, inicie sesion', 'Error de verificacion', 'error');
+                    route.push(base_url + 'auth/login');
                 }
             }
-            
         });
-
     }, []);
 
     useEffect(() => {
@@ -145,7 +143,9 @@ const Dashboard = () => {
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">Provincias</span>
-                            <div className="text-900 font-medium text-xl"><b>{total && total.prov}</b></div>
+                            <div className="text-900 font-medium text-xl">
+                                <b>{total && total.prov}</b>
+                            </div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                             <i className="pi pi-shopping-cart text-blue-500 text-xl" />
@@ -204,18 +204,16 @@ const Dashboard = () => {
             <div className="col-12 xl:col-12">
                 <div className="card">
                     <h5>Parroquias (Sitios) registradas</h5>
-                    {sitio && <DataTable value={sitio} rows={10} paginator responsiveLayout="scroll">
-                        <Column body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }} />
-                        <Column field="nombre" header="Sitio" sortable style={{ width: '35%' }} />
-                        <Column field="canton" header="Canton" sortable style={{ width: '25%' }} />
-                        <Column field="provincia" header="Provicia" sortable style={{ width: '25%' }} />
-
-                    </DataTable>}
+                    {sitio && (
+                        <DataTable value={sitio} rows={10} paginator responsiveLayout="scroll">
+                            <Column body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }} />
+                            <Column field="nombre" header="Sitio" sortable style={{ width: '35%' }} />
+                            <Column field="canton" header="Canton" sortable style={{ width: '25%' }} />
+                            <Column field="provincia" header="Provicia" sortable style={{ width: '25%' }} />
+                        </DataTable>
+                    )}
                 </div>
-
             </div>
-
-
         </div>
     );
 };

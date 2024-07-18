@@ -1,13 +1,11 @@
 "use client";
-import { decode as base64_decode, encode as base64_encode } from 'base-64';
+import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet'
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents, Popup } from 'react-leaflet'
-import "leaflet/dist/leaflet.css"
-import "leaflet-defaulticon-compatibility"
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
 
-//var utf8 = require('utf8');
-import { encode, decode } from 'utf8';
 import { useEffect, useRef, useState } from 'react';
 import { Chart } from 'primereact/chart';
 import { InputText } from 'primereact/inputtext';
@@ -22,7 +20,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 //import { provincias, cantonesPorProvincia, sitiosPorCanton, postCalculos } from '@/hooks/servicios';
-import { provincias, cantonesPorProvincia, sitiosSoloNombrePorCanton, postCalculos, fuentes, edificio, edificio_tarifa, tarifa, postCalculosSinSitio } from '../../../../hooks/servicios';
+import { fuentes, edificio_tarifa, tarifa, postCalculosSinSitio } from '../../../../hooks/servicios';
 //import { Link } from 'components';
 
 import { Tag } from 'primereact/tag';
@@ -30,20 +28,31 @@ import { useRouter } from 'next/navigation';
 import { Toast } from 'primereact/toast';
 import { Fieldset } from 'primereact/fieldset';
 import { Divider } from 'primereact/divider';
-//import { LayoutContext } from '../../../../layout/context/layoutcontext'; 
-//import { userService, alertService } from 'services';
+
+import dynamic from 'next/dynamic';
 
 
-export default function Home() {
+
+const Nosite = ({params}) => {
+    const a = params.name;
     const route = useRouter();
     const base_url = process.env.path;
     const myToast = useRef(null);
-
-
-    //FORM
-    
-
-    let [meses, setMeses] = useState(null);
+    const [globalFilter, setGlobalFilter] = useState('');
+    let [meses, setMeses] = useState({
+        "enero": 0.0,
+        "febrero": 0.0,
+        "marzo": 0.0,
+        "abril": 0.0,
+        "mayo": 0.0,
+        "junio": 0.0,
+        "julio": 0.0,
+        "agosto": 0.0,
+        "septiembre": 0.0,
+        "octubre": 0.0,
+        "noviembre": 0.0,
+        "diciembre": 0.0
+    });
     const [promedio, setPromedio] = useState(0.0);
     const [sliderValuePotenciaNominal, setSliderValuePotenciaNominal] = useState(0.0);
     const [sliderConsumoMensual, setSliderConsumoMensual] = useState(0.0);
@@ -83,7 +92,7 @@ export default function Home() {
     const [retorno, setRetorno] = useState(0.0);
 
     //MAPA
-    const [position, setPosition] = useState(null)
+    const [position, setPosition] = useState({ lat: -3.9935012796787754, lng: -79.2099205186457 });
     useEffect(() => {
         let mes = {
             "enero": 0.0,
@@ -107,8 +116,8 @@ export default function Home() {
             navigator.geolocation.getCurrentPosition(({ coords }) => {
                 const { latitude, longitude } = coords;
 
-                setPosition({ lat: latitude, lng: longitude });
-            }, ({ error }) => {
+                setPosition({ lat: parseFloat(latitude.toString()), lng: parseFloat(longitude.toString()) });
+            }, (error) => {
                 //-3.9935012796787754, -79.2099205186457
                 setPosition({ lat: -3.9935012796787754, lng: -79.2099205186457 });
             });
@@ -118,7 +127,7 @@ export default function Home() {
     }, []);
     //
 
-    const changeSelectOptionTarifa = (event) => {
+    const changeSelectOptionTarifa = (event:any) => {
 
         if (event.target.value) {
             edificio_tarifa(event.target.value).then((info) => {
@@ -131,9 +140,7 @@ export default function Home() {
         }
     };
 
-    if (!estadoP) {
-
-
+    useEffect(()=> {
         fuentes().then((info) => {
             if (info.props.data.message === 'OK') {
                 setListaFuentes(info.props.data.datos);
@@ -147,18 +154,17 @@ export default function Home() {
 
             }
         });
-        setEstadoP(true);
+    }, []);
 
-    }
-
-    //<coef_reflexion>/<inclinacion>/<orientacion>/<external>/<potencia>/<eficiencia>/<fs>/<rendimiento>
+     
+    
     const validationSchema = Yup.object().shape({
         coef_reflexion: Yup.number()
             .required('Se requiere el coeficiente de reflexion'),
         inclinacion: Yup.number()
             .required('se requiere la inclinacion'),
         orientacion: Yup.number()
-            .required('se requiere la orientacion'),        
+            .required('se requiere la orientacion'),
         tarifa: Yup.string()
             .required('Se requiere la tarifa'),
         fuente: Yup.string()
@@ -168,8 +174,12 @@ export default function Home() {
         potencia: Yup.number()
             .required('Se requiere la potencia'),
         eficiencia: Yup.number()
-            .required('Se requiere la eficiencia'),        
+            .required('Se requiere la eficiencia'),
         fs: Yup.number()
+            .required('Se requiere el factor de sombras'),
+        lon: Yup.number()
+            .required('Se requiere el rendimiento'),
+            lat: Yup.number()
             .required('Se requiere el factor de sombras'),
         rendimiento: Yup.number()
             .required('Se requiere el rendimiento'),
@@ -179,7 +189,9 @@ export default function Home() {
             .required('Se requiere el consumo mensual'),
         demanda_potencia_electronica: Yup.number().required('Se requiere la demanda de potencial electrico en KW'),
         irradiacion: Yup.number()
-            .required('Se requiere el promedio'),
+            .required('Se requiere la irradiacion'),
+        promedio: Yup.number()
+            .required('Se requiere la promedio'),
         enero: Yup.number().required('Ingrese un valor'),
         febrero: Yup.number().required('Ingrese un valor'),
         marzo: Yup.number().required('Ingrese un valor'),
@@ -191,58 +203,63 @@ export default function Home() {
         septiembre: Yup.number().required('Ingrese un valor'),
         octubre: Yup.number().required('Ingrese un valor'),
         noviembre: Yup.number().required('Ingrese un valor'),
-        diciembre: Yup.number().required('Ingrese un valor') 
+        diciembre: Yup.number().required('Ingrese un valor')
     });
     //SUMAS
-    const sumas = function (value) {
+    const sumas = function (value:any) {
         //console.log(value.target.id+"  "+value.target.value);
-        if (value.target.id == 'enero') {
+
+        if (value.target.id == 'enero' && 'enero' in meses) {
             meses.enero = value.target.value * 1;
         }
-        if (value.target.id == 'febrero') {
+        if (value.target.id == 'febrero' && 'febrero' in meses) {
             meses.febrero = value.target.value * 1;
         }
-        if (value.target.id == 'marzo') {
+        if (value.target.id == 'marzo' && 'marzo' in meses) {
             meses.marzo = value.target.value * 1;
         }
-        if (value.target.id == 'abril') {
+        if (value.target.id == 'abril' && 'abril' in meses) {
             meses.abril = value.target.value * 1;
         }
-        if (value.target.id == 'mayo') {
+        if (value.target.id == 'mayo' && 'mayo' in meses) {
             meses.mayo = value.target.value * 1;
         }
-        if (value.target.id == 'junio') {
+        if (value.target.id == 'junio' && 'junio' in meses) {
             meses.junio = value.target.value * 1;
         }
-        if (value.target.id == 'julio') {
+        if (value.target.id == 'julio' && 'julio' in meses) {
             meses.julio = value.target.value * 1;
         }
-        if (value.target.id == 'agosto') {
+        if (value.target.id == 'agosto' && 'agosto' in meses) {
             meses.agosto = value.target.value * 1;
         }
-        if (value.target.id == 'septiembre') {
+        if (value.target.id == 'septiembre' && 'septiembre' in meses) {
             meses.septiembre = value.target.value * 1;
         }
-        if (value.target.id == 'octubre') {
+        if (value.target.id == 'octubre' && 'octubre' in meses) {
             meses.octubre = value.target.value * 1;
         }
-        if (value.target.id == 'noviembre') {
+        if (value.target.id == 'noviembre' && 'noviembre' in meses) {
             meses.noviembre = value.target.value * 1;
         }
-        if (value.target.id == 'diciembre') {
+        if (value.target.id == 'diciembre' && 'diciembre' in meses) {
             meses.diciembre = value.target.value * 1;
         }
         var suma = 0.0;
-        for (var m in meses) {
-            //console.log(meses[m]);
-            suma += meses[m];
+
+        //SUMA
+        
+        for(var aux in meses) {
+            suma += meses[aux];
         }
+
         suma = suma / 12;
         suma = Math.round(suma * 100) / 100;
-        reset({ "promedio": suma });
+        //reset({ "promedio": suma });
+        reset({"promedio": suma});
         setPromedio(suma);
         //setIrra(suma);
-        
+
         //suma = meses.enero+meses.febrero+meses.marzo+meses.abril+meses.mayo
 
     }
@@ -252,7 +269,7 @@ export default function Home() {
     const { errors } = formState;
 
     const onSubmit = (data) => {
-        
+
         console.log("-*-*-*-**");
         var tar = listaTarifa.find(dat => dat.external == data.tarifa);
         console.log("-*-*-*-**");
@@ -285,7 +302,7 @@ export default function Home() {
                 "octubre": data.octubre,
                 "noviembre": data.noviembre,
                 "diciembre": data.diciembre,
-                "promedio": data.promedio                
+                "promedio": data.promedio
             }
         };
         console.log("****************");
@@ -451,7 +468,7 @@ export default function Home() {
         //console.log(datos);
     }
 
-    
+
 
     //const { register, handleSubmit, formState: { errors } } = useForm();
     //onSubmit={handleSubmit(onSubmit)}
@@ -459,17 +476,39 @@ export default function Home() {
     const URL = process.env.path;
     const URL_MEDIA = process.env.path_media;
 
+    function Mapaclick() {
+
+        const map = useMapEvents({
+            click: (e) => {
+                console.log(e);
+                const { lat, lng } = e.latlng;
+                setPosition({ lat: lat, lng: lng });
+                e.target.eachLayer((layer) => {
+                    if (layer instanceof L.marker) {
+                        //layer.remove();
+                        e.target.removeLayer(layer);
+                    }
+                });
+
+                L.marker([lat, lng]).addTo(map);
+            }
+        });
+        return null;
+    }
+    
+    
+    
     return (
-        <main className="col-12">
+        <div className="col-12">
             <Toast ref={myToast} />
             <div className="card p-fluid">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid">
                         <div className='col'>
                             <div className="card">
-                                <div class="card-body">
+                                <div className="card-body">
                                     <div>
-                                        <h5 class="card-title"><img src={URL_MEDIA + 'sol.png'} width={45} /><b>|</b> Datos del <b style={{ color: "rgb(157, 42, 17)" }}>irradiación</b></h5>
+                                        <h5 className="card-title"><img src={URL_MEDIA + 'sol.png'} width={45} /><b>|</b> Datos del <b style={{ color: "rgb(157, 42, 17)" }}>irradiación</b></h5>
                                     </div>
 
                                     <div className="form-row">
@@ -477,22 +516,8 @@ export default function Home() {
                                             <label>Sitio</label>
                                             <Fieldset legend="Ingrese el sitio" toggleable collapsed={true}>
                                                 <div className="form-group row" style={{ marginBottom: "10px" }}>
-                                                    {position && <MapContainer
-                                                        whenReady={(map) => {
-                                                            map.target.on("click", function (e) {
-                                                                
-                                                                const { lat, lng } = e.latlng;
-                                                                setPosition({ lat: lat, lng: lng });
-                                                                map.target.eachLayer((layer) => {
-                                                                    if (layer instanceof L.Marker) {
-                                                                        layer.remove();
-                                                                    }
-                                                                });
-                                                                L.marker([lat, lng]).addTo(map.target);
-                                                            });
-                                                        }}
-
-                                                        center={position} zoom="15" style={{ height: '200px' }}>
+                                                    {position && window != undefined && <MapContainer 
+                                                        center={position} zoom={15} style={{ height: '200px' }}>
                                                         <div className='col'>
                                                             <TileLayer
                                                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -504,13 +529,14 @@ export default function Home() {
                                                             <Marker position={position}>
                                                                 <Popup>You are here</Popup>
                                                             </Marker>)}
+                                                        <Mapaclick />
                                                     </MapContainer>}
                                                     <div className="col-sm-10">
-                                                        <InputText value={position && position.lng} defaultValue={position && position.lng} type="text" readOnly {...register('lng')} className="form-control form-control-lg" id="colFormLabelLg" placeholder="Ingrese longitud" />
-                                                        {errors.lon && <div className='text-xs inline-block py-1 px-2 rounded text-red-600 '>{errors.lng?.message}</div>}
+                                                        <InputText value={position && position.lng.toString()} defaultValue={position && position.lng} type="text" readOnly {...register('lon')} className="form-control form-control-lg" id="colFormLabelLg" placeholder="Ingrese longitud" />
+                                                        {errors.lon && <div className='text-xs inline-block py-1 px-2 rounded text-red-600 '>{errors.lon?.message}</div>}
                                                     </div>
                                                     <div className="col-sm-10">
-                                                        <InputText defaultValue={position && position.lat} value={position && position.lat} type="text" readOnly {...register('lat')} className="form-control form-control-lg" id="colFormLabelLg2" placeholder="Ingrese latitud" />
+                                                        <InputText defaultValue={position && position.lat} value={position && position.lat.toString()} type="text" readOnly {...register('lat')} className="form-control form-control-lg" id="colFormLabelLg2" placeholder="Ingrese latitud" />
                                                         {errors.lat && <div className='text-xs inline-block py-1 px-2 rounded text-red-600 '>{errors.lat?.message}</div>}
                                                     </div>
                                                 </div>
@@ -714,7 +740,7 @@ export default function Home() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <InputText {...register('promedio')} value={promedio} name="promedio" readOnly type="text" className={`form-control ${errors.promedio ? 'p-invalid' : ''}`} />
+                                                <InputText {...register('promedio')} value={promedio.toString()} name="promedio" readOnly type="text" className={`form-control ${errors.promedio ? 'p-invalid' : ''}`} />
                                                 <div className="p-error">{errors.promedio?.message}</div>
                                             </Fieldset>
                                         </div>
@@ -751,10 +777,10 @@ export default function Home() {
                             </div>
 
                             <div className="card">
-                                <div class="card-body">
+                                <div className="card-body">
 
                                     <div>
-                                        <h5 class="card-title"><img src={URL_MEDIA + 'casa.png'} width={45} /><b>|</b> Datos del <b style={{ color: "rgb(157, 42, 17)" }}>edificio</b></h5>
+                                        <h5 className="card-title"><img src={URL_MEDIA + 'casa.png'} width={45} /><b>|</b> Datos del <b style={{ color: "rgb(157, 42, 17)" }}>edificio</b></h5>
                                     </div>
 
                                     <div className="form-row">
@@ -787,16 +813,47 @@ export default function Home() {
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Consumo eléctrico promedio mensual [kWh]</label>
-                                            <Slider step={1} min={0} max={10000} value={sliderConsumoMensual} onChange={(e) => { setSliderConsumoMensual(e.value); setValue('consumo_mensual', e.value); }} />
-                                            <InputText {...register('consumo_mensual')} value={sliderConsumoMensual} onChange={(e) => setSliderConsumoMensual((e.target.value))} name="consumo_mensual" type="text" className={`form-control ${errors.consumo_mensual ? 'p-invalid' : ''}`} />
+                                            <Slider
+                                                step={1}
+                                                min={0}
+                                                max={10000}
+                                                value={sliderConsumoMensual}
+                                                onChange={(e) => {
+                                                    setSliderConsumoMensual(parseFloat(e.value.toString()));
+                                                    setValue('consumo_mensual', parseFloat(e.value.toString()));
+                                                }}
+                                            />
+                                            <InputText
+                                                {...register('consumo_mensual')}
+                                                value={sliderConsumoMensual.toString()}
+                                                onChange={(e) => setSliderConsumoMensual(parseFloat(e.target.value.toString()))}
+                                                name="consumo_mensual"
+                                                type="text"
+                                                className={`form-control ${errors.consumo_mensual ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.consumo_mensual?.message}</div>
                                         </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Demanda de potencia electrica [KW]</label>
-                                            <Slider value={sliderDemanda} onChange={(e) => { setSliderDemanda(e.value); setValue('demanda_potencia_electronica', e.value); }} min={0} max={1000} />
-                                            <InputText {...register('demanda_potencia_electronica')} name="demanda_potencia_electronica" type="text" value={sliderDemanda} onChange={(e) => setSliderDemanda((e.target.value))} className={`form-control ${errors.demanda_potencia_electronica ? 'p-invalid' : ''}`} />
+                                            <Slider
+                                                value={sliderDemanda}
+                                                onChange={(e) => {
+                                                    setSliderDemanda(parseFloat(e.value.toString()));
+                                                    setValue('demanda_potencia_electronica', parseFloat(e.value.toString()));
+                                                }}
+                                                min={0}
+                                                max={1000}
+                                            />
+                                            <InputText
+                                                {...register('demanda_potencia_electronica')}
+                                                name="demanda_potencia_electronica"
+                                                type="text"
+                                                value={sliderDemanda.toString()}
+                                                onChange={(e) => setSliderDemanda(parseFloat(e.target.value.toString()))}
+                                                className={`form-control ${errors.demanda_potencia_electronica ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.demanda_potencia_electronica?.message}</div>
                                         </div>
                                     </div>
@@ -807,24 +864,58 @@ export default function Home() {
                         <div className='col'>
 
                             <div className="card">
-                                <div class="card-body">
+                                <div className="card-body">
                                     <div>
-                                        <h5 class="card-title"><img src={URL_MEDIA + 'panel.png'} width={45} /><b>|</b> Datos del sistema <b style={{ color: "rgb(157, 42, 17)" }}>Fotovoltaico</b></h5>
+                                        <h5 className="card-title"><img src={URL_MEDIA + 'panel.png'} width={45} /><b>|</b> Datos del sistema <b style={{ color: "rgb(157, 42, 17)" }}>Fotovoltaico</b></h5>
                                     </div>
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Angulo de Inclinación, b [º]</label>
-                                            <Knob value={sliderAngulo} valueTemplate={'{value}°'} onChange={(e) => { setSliderAngulo(e.value); setValue('inclinacion', e.value); }} step={1} min={0} max={90} />
-                                            <InputText {...register('inclinacion')} value={sliderAngulo} onChange={(e) => setSliderAngulo((e.target.value))} name="inclinacion" type="text" className={`form-control ${errors.inclinacion ? 'p-invalid' : ''}`} />
+                                            <Knob
+                                                value={sliderAngulo}
+                                                valueTemplate={'{value}°'}
+                                                onChange={(e) => {
+                                                    setSliderAngulo(e.value);
+                                                    setValue('inclinacion', e.value);
+                                                }}
+                                                step={1}
+                                                min={0}
+                                                max={90}
+                                            />
+                                            <InputText
+                                                {...register('inclinacion')}
+                                                value={sliderAngulo.toString()}
+                                                onChange={(e) => setSliderAngulo(parseFloat(e.target.value.toString()))}
+                                                name="inclinacion"
+                                                type="text"
+                                                className={`form-control ${errors.inclinacion ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.inclinacion?.message}</div>
                                         </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Orientación, a [º]</label>
-                                            <Knob value={sliderInclinacion} valueTemplate={'{value}°'} onChange={(e) => { setSliderInclinacion(e.value); setValue('orientacion', e.value); }} step={1} min={-90} max={90} />
-                                            <InputText {...register('orientacion')} value={sliderInclinacion} onChange={(e) => setSliderInclinacion((e.target.value))} name="orientacion" type="text" className={`form-control ${errors.orientacion ? 'p-invalid' : ''}`} />
+                                            <Knob
+                                                value={sliderInclinacion}
+                                                valueTemplate={'{value}°'}
+                                                onChange={(e) => {
+                                                    setSliderInclinacion(e.value);
+                                                    setValue('orientacion', e.value);
+                                                }}
+                                                step={1}
+                                                min={-90}
+                                                max={90}
+                                            />
+                                            <InputText
+                                                {...register('orientacion')}
+                                                value={sliderInclinacion.toString()}
+                                                onChange={(e) => setSliderInclinacion(parseFloat(e.target.value.toString()))}
+                                                name="orientacion"
+                                                type="text"
+                                                className={`form-control ${errors.orientacion ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.orientacion?.message}</div>
                                         </div>
                                     </div>
@@ -840,9 +931,22 @@ export default function Home() {
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Potencia nominal del generador PNOM,G, [kWp]</label>
-                                            <Slider step={0.1} value={sliderValuePotenciaNominal} onChange={(e) => { setSliderValuePotenciaNominal(e.value); setValue('potencia', e.value); }} />
-                                            <InputText {...register('potencia')} value={sliderValuePotenciaNominal} onChange={(e) => setSliderValuePotenciaNominal((e.target.value))} name="potencia" type="text" className={`form-control ${errors.potencia ? 'p-invalid' : ''}`} />
-
+                                            <Slider
+                                                step={0.1}
+                                                value={sliderValuePotenciaNominal}
+                                                onChange={(e) => {
+                                                    setSliderValuePotenciaNominal(parseFloat(e.value.toString()));
+                                                    setValue('potencia', parseFloat(e.value.toString()));
+                                                }}
+                                            />
+                                            <InputText
+                                                {...register('potencia')}
+                                                value={sliderValuePotenciaNominal.toString()}
+                                                onChange={(e) => setSliderValuePotenciaNominal(parseFloat(e.target.value.toString()))}
+                                                name="potencia"
+                                                type="text"
+                                                className={`form-control ${errors.potencia ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.potencia?.message}</div>
                                         </div>
                                     </div>
@@ -850,24 +954,73 @@ export default function Home() {
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Eficiencia del panel fotovoltaico [%]</label>
-                                            <Knob value={sliderEficiencia} valueTemplate={'{value}%'} onChange={(e) => { setSliderEficiencia(e.value); setValue('eficiencia', e.value); }} step={1} min={0} max={50} />
-                                            <InputText {...register('eficiencia')} value={sliderEficiencia} onChange={(e) => setSliderEficiencia((e.target.value))} name="eficiencia" type="text" className={`form-control ${errors.eficiencia ? 'p-invalid' : ''}`} />
+                                            <Knob
+                                                value={sliderEficiencia}
+                                                valueTemplate={'{value}%'}
+                                                onChange={(e) => {
+                                                    setSliderEficiencia(e.value);
+                                                    setValue('eficiencia', e.value);
+                                                }}
+                                                step={1}
+                                                min={0}
+                                                max={50}
+                                            />
+                                            <InputText
+                                                {...register('eficiencia')}
+                                                value={sliderEficiencia.toString()}
+                                                onChange={(e) => setSliderEficiencia(parseFloat(e.target.value.toString()))}
+                                                name="eficiencia"
+                                                type="text"
+                                                className={`form-control ${errors.eficiencia ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.eficiencia?.message}</div>
                                         </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Factor de sombras, FS, (0 - 1)</label>
-                                            <Slider min={0.0} max={1.0} step={0.01} value={sliderFS} onChange={(e) => { setSliderFS(e.value); setValue('fs', e.value); }} />
-                                            <InputText {...register('fs')} value={sliderFS} onChange={(e) => setSliderFS((e.target.value))} name="fs" type="text" className={`form-control ${errors.fs ? 'p-invalid' : ''}`} />
+                                            <Slider
+                                                min={0.0}
+                                                max={1.0}
+                                                step={0.01}
+                                                value={sliderFS}
+                                                onChange={(e) => {
+                                                    setSliderFS(parseFloat(e.value.toString()));
+                                                    setValue('fs', parseFloat(e.value.toString()));
+                                                }}
+                                            />
+                                            <InputText
+                                                {...register('fs')}
+                                                value={sliderFS.toString()}
+                                                onChange={(e) => setSliderFS(parseFloat(e.target.value.toString()))}
+                                                name="fs"
+                                                type="text"
+                                                className={`form-control ${errors.fs ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.fs?.message}</div>
                                         </div>
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                             <label>Rendimiento característico PR4, (0 - 1)</label>
-                                            <Slider min={0.0} max={1.0} step={0.01} value={sliderRendimiento} onChange={(e) => { setSliderRendimiento(e.value); setValue('rendimiento', e.value); }} />
-                                            <InputText {...register('rendimiento')} value={sliderRendimiento} onChange={(e) => setSliderRendimiento((e.target.value))} name="rendimiento" type="text" className={`form-control ${errors.rendimiento ? 'p-invalid' : ''}`} />
+                                            <Slider
+                                                min={0.0}
+                                                max={1.0}
+                                                step={0.01}
+                                                value={sliderRendimiento}
+                                                onChange={(e) => {
+                                                    setSliderRendimiento(parseFloat(e.value.toString()));
+                                                    setValue('rendimiento', parseFloat(e.value.toString()));
+                                                }}
+                                            />
+                                            <InputText
+                                                {...register('rendimiento')}
+                                                value={sliderRendimiento.toString()}
+                                                onChange={(e) => setSliderRendimiento(parseFloat(e.target.value.toString()))}
+                                                name="rendimiento"
+                                                type="text"
+                                                className={`form-control ${errors.rendimiento ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.rendimiento?.message}</div>
                                         </div>
                                     </div>
@@ -876,8 +1029,24 @@ export default function Home() {
                                         <div className="field p-fluid">
 
                                             <label>Costo de compra e instalalción (USD/kW)</label>
-                                            <Slider min={0} max={10000} step={1} value={sliderCosto} onChange={(e) => { setSliderCosto(e.value); setValue('costo_instalacion', e.value); }} />
-                                            <InputText {...register('costo_instalacion')} value={sliderCosto} onChange={(e) => setSliderCosto((e.target.value))} name="costo_instalacion" type="text" className={`w-full form-control ${errors.costo_instalacion ? 'p-invalid' : ''}`} />
+                                            <Slider
+                                                min={0}
+                                                max={10000}
+                                                step={1}
+                                                value={sliderCosto}
+                                                onChange={(e) => {
+                                                    setSliderCosto(parseFloat(e.value.toString()));
+                                                    setValue('costo_instalacion', parseFloat(e.value.toString()));
+                                                }}
+                                            />
+                                            <InputText
+                                                {...register('costo_instalacion')}
+                                                value={sliderCosto.toString()}
+                                                onChange={(e) => setSliderCosto(parseFloat(e.target.value.toString()))}
+                                                name="costo_instalacion"
+                                                type="text"
+                                                className={`w-full form-control ${errors.costo_instalacion ? 'p-invalid' : ''}`}
+                                            />
                                             <div className="p-error">{errors.costo_instalacion?.message}</div>
                                         </div>
                                     </div>
@@ -895,7 +1064,7 @@ export default function Home() {
                                     </Button>
                                 </div>
                                 <div className="field col">
-                                    <Button severity="secondary" onClick={() => reset(formOptions.defaultValues)} type="button" disabled={formState.isSubmitting} className="btn btn-danger">Nuevo calculo</Button>
+                                    <Button severity="secondary" onClick={() => route.push(base_url + 'calculos/sinsitio')} type="button" disabled={formState.isSubmitting} className="btn btn-danger">Nuevo calculo</Button>
 
                                 </div>
                             </div>
@@ -1040,6 +1209,7 @@ export default function Home() {
 
             </div>
 
-        </main >
+        </div >
     )
 }
+export default Nosite;

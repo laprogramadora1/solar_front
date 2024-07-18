@@ -29,7 +29,7 @@ const AppMenu = () => {
         {
             label: 'Mapa',
             items: [
-                { label: 'Mapa de sitios registrados', icon: 'pi pi-fw pi-map', to: base_url+'dashboard/mapa' }
+                { label: 'Mapa de sitios registrados', icon: 'pi pi-fw pi-map', to: base_url+'dashboard/mapa/sitios' }
             ]
         }
         

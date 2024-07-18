@@ -12,10 +12,12 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+    const base_only_images = process.env.path_only_images;
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+    
+                <link id="theme-css" href={base_only_images+`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
             </head>
             <body>
                 <PrimeReactProvider>

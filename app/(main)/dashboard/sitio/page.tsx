@@ -28,66 +28,65 @@ const ListaSitio = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const myToast = useRef(null);
     useEffect(() => {
-        provincias(get("token")).then((data) => {
+        provincias(get('token')).then((data) => {
             //console.log(data.props.data);
-            if (data.props.data.code == "200") {
+            if (data.props.data.code == '200') {
                 let datito = [];
                 var i = 0;
-                data.props.data.datos.forEach(element => {
-                    datito[i] = { "label": element.nombre, "value": element.external };
+                data.props.data.datos.forEach((element) => {
+                    datito[i] = { label: element.nombre, value: element.external };
                     i++;
                 });
                 setProvincia(datito);
                 //setProvincia(data.props.data.datos);
             } else {
-                if(data.props.data.code == '401') {
+                if (data.props.data.code == '401') {
                     //myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
-                    message("Token no existe, inicie sesion", "Error de verificacion", "error");
-                    ruote.push(base_url + "auth/login");
-                } else{
-                    myToast.current?.show({ severity: "error", summary: "Error", detail: "Error Uknow" });
+                    message('Token no existe, inicie sesion', 'Error de verificacion', 'error');
+                    ruote.push(base_url + 'auth/login');
+                } else {
+                    myToast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error Uknow' });
                 }
             }
-
         });
     }, []);
 
     const list_canton = function (valor) {
         console.log(valor);
-        cantones_provincia(valor, get("token")).then((data) => {
+        cantones_provincia(valor, get('token')).then((data) => {
             setSitio([]);
             setCant(null);
             if (data.props.data.code == '200') {
                 let datito = [];
                 var i = 0;
-                data.props.data.datos.forEach(element => {
-                    datito[i] = { "label": element.nombre, "value": element.external };
+                data.props.data.datos.forEach((element) => {
+                    datito[i] = { label: element.nombre, value: element.external };
                     i++;
                 });
                 setCanton(datito);
-            } else { setCanton([]);
-                if(data.props.data.code == '401') {
-                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
-                } else{
-                    myToast.current?.show({ severity: "error", summary: "Error", detail: "Error Uknow" });
+            } else {
+                setCanton([]);
+                if (data.props.data.code == '401') {
+                    myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: data.props.data.datos.error });
+                } else {
+                    myToast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error Uknow' });
                 }
             }
         });
     };
 
     const list_sitios = function (valor) {
-
-        sitios_cantones(valor, get("token")).then((data) => {
-            console.log(data+valor);
+        sitios_cantones(valor, get('token')).then((data) => {
+            console.log(data + valor);
             setCant(valor);
             if (data.props.data.code == '200') {
-
                 setSitio(data.props.data.datos);
-            } else { setSitio([]); 
-                if(data.props.data.code == '401') {
-                    myToast.current?.show({ severity: "error", summary: "Respuesta", detail: data.props.data.datos.error });
-                } else{
-                    myToast.current?.show({ severity: "error", summary: "Error", detail: "Error Uknow" });
+            } else {
+                setSitio([]);
+                if (data.props.data.code == '401') {
+                    myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: data.props.data.datos.error });
+                } else {
+                    myToast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error Uknow' });
                 }
             }
         });
@@ -102,58 +101,71 @@ const ListaSitio = () => {
             </span>
         </div>
     );
-    
+
     const searchBodyTemplate = (value) => {
         //console.log(value);
-        return (<div >                
-                <Link style={{margin:"10px"}} href={base_url + "dashboard/sitio/modificar/" + value.external}><b className='pi pi-pencil'></b></Link>
-                <Link style={{margin:"10px"}} href={base_url + "dashboard/censo/" + value.external}><b className='pi pi-book'></b></Link>
-            </div>);//<Button icon="pi pi-search" />;
-    }
+        return (
+            <div>
+                <Link style={{ margin: '10px' }} href={base_url + 'dashboard/sitio/modificar/' + value.external}>
+                    <b className="pi pi-pencil"></b>
+                </Link>
+                <Link style={{ margin: '10px' }} href={base_url + 'dashboard/censo/' + value.external}>
+                    <b className="pi pi-book"></b>
+                </Link>
+            </div>
+        ); //<Button icon="pi pi-search" />;
+    };
 
     return (
         <div className="grid">
             <Toast ref={myToast} />
             <div className="col-12 xl:col-12">
                 <div className="card">
-                    <h5 >Sitios registrados</h5>
+                    <h5>Sitios registrados</h5>
                     <Card>
-                        <div className='card'>
-                            <div className="p-field p-grid" style={{ margin: "10px" }}>
-                                <label htmlFor="firstname3" className="p-col-fixed" ><b>Provincia</b></label>
+                        <div className="card">
+                            <div className="p-field p-grid" style={{ margin: '10px' }}>
+                                <label htmlFor="firstname3" className="p-col-fixed">
+                                    <b>Provincia</b>
+                                </label>
                                 <div className="p-col">
                                     <Dropdown
                                         value={prov}
                                         options={provincia}
-                                        onChange={(e) => { setProv(e.value); list_canton(e.value) }}
-                                        placeholder="Seleccione una provincia" />
+                                        onChange={(e) => {
+                                            setProv(e.value);
+                                            list_canton(e.value);
+                                        }}
+                                        placeholder="Seleccione una provincia"
+                                    />
                                 </div>
-
                             </div>
-                            <div className="p-field p-grid" style={{ margin: "10px" }}>
-                                <label htmlFor="firstname2" className="p-col-fixed" ><b>Canton</b></label>
+                            <div className="p-field p-grid" style={{ margin: '10px' }}>
+                                <label htmlFor="firstname2" className="p-col-fixed">
+                                    <b>Canton</b>
+                                </label>
                                 <div className="p-col">
                                     <Dropdown
                                         value={cant}
                                         options={canton}
-                                        onChange={(e) => { setCant(e.value); list_sitios(e.value) }}
-                                        placeholder="Seleccione un canton" />
+                                        onChange={(e) => {
+                                            setCant(e.value);
+                                            list_sitios(e.value);
+                                        }}
+                                        placeholder="Seleccione un canton"
+                                    />
                                 </div>
                             </div>
-                            <div className="p-field p-grid" style={{ margin: "10px" }}>
-                            {cant && <Link style={{marginTop:"20px"}} href={base_url + "dashboard/sitio/guardar/" + cant}><b className='pi pi-plus'> NUEVO</b></Link>}
+                            <div className="p-field p-grid" style={{ margin: '10px' }}>
+                                {cant && (
+                                    <Link style={{ marginTop: '20px' }} href={base_url + 'dashboard/sitio/guardar/' + cant}>
+                                        <b className="pi pi-plus"> NUEVO</b>
+                                    </Link>
+                                )}
                             </div>
-                            
                         </div>
-
                     </Card>
-                    <DataTable value={sitio} rows={10} paginator
-                        dataKey="external"
-                        emptyMessage="No hay datos."
-                        className="datatable-responsive"
-                        header={header}
-                        globalFilter={globalFilter}
-                        responsiveLayout="scroll">
+                    <DataTable value={sitio} rows={10} paginator dataKey="external" emptyMessage="No hay datos." className="datatable-responsive" header={header} globalFilter={globalFilter} responsiveLayout="scroll">
                         <Column body={(data, options) => options.rowIndex + 1} header="#" sortable style={{ width: '15%' }} />
                         <Column field="nombre" header="Sitio" sortable style={{ width: '35%' }} />
 
@@ -161,13 +173,9 @@ const ListaSitio = () => {
                         <Column field="irradiacion" header="Irradiacion" sortable style={{ width: '35%' }} />
                         <Column field="promedio" header="Promedio anual" sortable style={{ width: '35%' }} />
                         <Column field="estado" header="Estado" style={{ width: '25%' }} />
-                        <Column header="Acciones" body={searchBodyTemplate} headerStyle={{ minWidth: '10rem' }}>
-
-                        </Column>
+                        <Column header="Acciones" body={searchBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
-                    
                 </div>
-
             </div>
         </div>
     );

@@ -10,7 +10,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 
 import * as Yup from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Panel } from 'primereact/panel';
 import { Divider } from 'primereact/divider';
@@ -39,32 +39,28 @@ const LoginPage = () => {
     let { errors } = formState;
     const myToast = useRef(null);
 
-    
-
     const sendInfo = (datos) => {
         //let datitos = datos;
-        const datito = {"correo": datos.correo,"clave":datos.clave};    
+        const datito = { correo: datos.correo, clave: datos.clave };
         sesion(datito).then((data) => {
-           
             const info = data.props.datos;
             if (info.code == '200') {
-                myToast.current?.show({ severity: "success", summary: "Respuesta", detail: info.msg });
+                myToast.current?.show({ severity: 'success', summary: 'Respuesta', detail: info.msg });
                 console.log(info);
-                add("token", info.datos.token);
-                add("user", info.datos.user);
-                add("permiso", info.datos.permiso);
-                add("external",info.datos.external);
-                message("Bienvenido " + info.datos.user, "Acceso exitoso!");
+                add('token', info.datos.token);
+                add('user', info.datos.user);
+                add('permiso', info.datos.permiso);
+                add('external', info.datos.external);
+                message('Bienvenido ' + info.datos.user, 'Acceso exitoso!');
                 //router.refresh();
-                router.push(base_url + "dashboard",  { refresh: true });
+                router.push(base_url + 'dashboard', { refresh: true });
                 isSession();
                 router.refresh();
                 //router.replace(base_url + "dashboard", { scroll: false });
                 //redirect(base_url + "dashboard");
             } else {
-                myToast.current?.show({ severity: "error", summary: "Respuesta", detail: info.datos });
+                myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: info.datos });
             }
-
         });
     };
 
@@ -87,41 +83,58 @@ const LoginPage = () => {
                         </div>
                         <form onSubmit={handleSubmit(sendInfo)} className="p-fluid p-formgrid p-grid">
                             <div>
-                                {(errors.correo || errors.clave) && <Panel header="Errores">
-                                    {errors.correo && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.correo?.message}</small>}
-                                    {errors.clave && <small style={{ marginTop: "10px" }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">{errors.clave?.message}</small>}
-
-                                </Panel>}
+                                {(errors.correo || errors.clave) && (
+                                    <Panel header="Errores">
+                                        {errors.correo && (
+                                            <small style={{ marginTop: '10px' }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">
+                                                {errors.correo?.message}
+                                            </small>
+                                        )}
+                                        {errors.clave && (
+                                            <small style={{ marginTop: '10px' }} className="p-invalid text-xs inline-block py-1 px-2 rounded text-red-600">
+                                                {errors.clave?.message}
+                                            </small>
+                                        )}
+                                    </Panel>
+                                )}
                                 <Divider />
                                 <div>
                                     <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
                                         Correo electronico
                                     </label>
                                     <InputText id="email1" type="text" {...register('correo')} placeholder="Ingrese el Correo electronico" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
-
                                 </div>
                                 <div>
                                     <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
                                         Clave
                                     </label>
-                                    <Password inputId="password1" feedback={false} onKeyUp={(e) => reset({ "clave": e.target.value })} {...register('clave')} placeholder="Ingrese su clave" className="w-full mb-5" toggleMask></Password>
-
+                                    <Password
+                                        inputId="password1"
+                                        feedback={false}
+                                        onKeyUp={(e) => {
+                                            if (e.target) {
+                                                reset({ clave: (e.target as HTMLInputElement).value });
+                                            }
+                                        }}
+                                        {...register('clave')}
+                                        placeholder="Ingrese su clave"
+                                        className="w-full mb-5"
+                                        toggleMask
+                                    ></Password>
                                 </div>
 
-
                                 <div className="flex align-items-center justify-content-between mb-5 gap-5">
-
                                     <a href={base_url} className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
                                         Regresar al inicio
                                     </a>
                                 </div>
-                                <Button label="Inicio de sesion"  type='submit' className="w-full p-3 text-xl" ></Button>
+                                <Button label="Inicio de sesion" type="submit" className="w-full p-3 text-xl"></Button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

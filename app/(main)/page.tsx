@@ -7,7 +7,6 @@ import { LayoutContext } from '../../layout/context/layoutcontext';
 
 import { inicio } from '../../hooks/servicios';
 
-
 const LandingPage = () => {
     const [isHidden, setIsHidden] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
@@ -18,22 +17,18 @@ const LandingPage = () => {
     };
 
     useEffect(() => {
-        inicio().then((data) => {            
-        });
+        inicio().then((data) => {});
     }, []);
-    
+
     return (
-
         <div id="home" className="landing-wrapper overflow-hidden">
-
-
             <div
                 id="hero"
                 className="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden"
                 style={{
                     background: 'linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%)',
                     clipPath: 'ellipse(150% 87% at 93% 13%)',
-                    backgroundImage: 'url('+'"'+URL+'img/solar.png")'
+                    backgroundImage: 'url(' + '"' + URL + 'img/solar.png")'
                 }}
             >
                 <div className="col-4 mx-4 md:mx-8 mt-0 md:mt-4 card">
@@ -41,12 +36,15 @@ const LandingPage = () => {
                         <span className="font-light block">CALCULADORA SOLAR FOTOVOLTAICA</span>
                     </h2>
                     <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">Simula, recibe tu presupuesto y empieza a ahorrar. </p>
-                    <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">Simula, recibe tu presupuesto y empieza a ahorrar. En base a un valor de consumo medio, te presentaremos una solución para ahorrar en tu factura eléctrica. </p>
-                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href="/calculos">Calculadora</Link>
-                    
+                    <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">
+                        Simula, recibe tu presupuesto y empieza a ahorrar. En base a un valor de consumo medio, te presentaremos una solución para ahorrar en tu factura eléctrica.{' '}
+                    </p>
+                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href="/calculos">
+                        Calculadora
+                    </Link>
                 </div>
                 <div className="flex justify-content-center md:justify-content-end">
-                    <img src="/img/escudo_unl.png" style={{height:'200px'}} alt="Hero Image" className="w-9 md:w-auto" />
+                    <img src="/img/escudo_unl.png" style={{ height: '200px' }} alt="Hero Image" className="w-9 md:w-auto" />
                 </div>
             </div>
 
@@ -304,15 +302,11 @@ const LandingPage = () => {
                             <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style={{ maxWidth: '800px' }}>
                                 “Desarrolladora: Elizabeth Urena”
                             </p>
-                            <img src="/img/logo_computacion.jpg" style={{width:'150px'}} className="mt-4" alt="Company logo" />
+                            <img src="/img/logo_computacion.jpg" style={{ width: '150px' }} className="mt-4" alt="Company logo" />
                         </div>
                     </div>
                 </div>
             </div>
-
-            
-
-            
 
             <div className="py-4 px-4 mx-0 mt-8 lg:mx-8">
                 <div className="grid justify-content-between">
@@ -327,18 +321,18 @@ const LandingPage = () => {
                         <div className="grid text-center md:text-left">
                             <div className="col-12 md:col-3">
                                 <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Sitio</h4>
-                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/">Inicio</Link>
-                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/calculos">Calculadora</Link>
-                                
+                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/">
+                                    Inicio
+                                </Link>
+                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/calculos">
+                                    Calculadora
+                                </Link>
                             </div>
-
-                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     );
 };
 

@@ -28,10 +28,12 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         removeKey('permiso');    
         router.push('/auth/login');    
     }
+    const base_only_images = process.env.path_only_images;
+    const base_url = process.env.path;
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
+                <img src={base_only_images+`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
                 <span>Calculadora solar. Administrador</span>
             </Link>
 
@@ -45,7 +47,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
             <Tooltip target=".perfil" mouseTrack mouseTrackLeft={10} position='left'/>
             <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
                 
-                <button type="button" onClick={(e)=>router.push('/dashboard/perfil')}  className="p-link layout-topbar-button perfil" data-pr-tooltip="Perfil">
+                <button type="button" onClick={(e)=>router.push(base_url+'/dashboard/perfil')}  className="p-link layout-topbar-button perfil" data-pr-tooltip="Perfil">
                     <i className="pi pi-user"></i>
                     <span>Perfil</span>
                 </button>
