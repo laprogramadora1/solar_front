@@ -13,12 +13,30 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const base_only_images = process.env.path_only_images;
+	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+	const cspHeader = `
+  default-src 'self' https://computacion.unl.edu.ec/sfv ;
+  script-src 'self' 'nonce-${nonce}' https://computacion.unl.edu.ec/sfv;
+
+  style-src 'self' https://fonts.googleapis.com 'unsafe-inline' ;
+  
+  img-src 'self' blob: data:;
+  font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
+  object-src 'none';
+  base-uri 'self';
+  form-action 'self';
+  block-all-mixed-content;
+  upgrade-insecure-requests;
+`;	
+
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-    
+		    
+		
                 <link id="theme-css" href={base_only_images+`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
-            </head>
+            
+	</head>
             <body>
                 <PrimeReactProvider>
                     <LayoutProvider>{children}</LayoutProvider>

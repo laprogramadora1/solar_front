@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import { Toast } from 'primereact/toast';
 //import { LayoutContext } from '../../../../layout/context/layoutcontext';
 //import { userService, alertService } from 'services';
+import { Tooltip } from 'primereact/tooltip';
 
 export default function Home() {
     //
@@ -192,10 +193,10 @@ export default function Home() {
     //<coef_reflexion>/<inclinacion>/<orientacion>/<external>/<potencia>/<eficiencia>/<fs>/<rendimiento>
     const validationSchema = Yup.object().shape({
         provincia: Yup.string().required('Se requiere la provincia'),
-        canton: Yup.string().required('Se requiere el canton'),
-        coef_reflexion: Yup.number().required('Se requiere el coeficiente de reflexion'),
-        inclinacion: Yup.number().required('se requiere la inclinacion'),
-        orientacion: Yup.number().required('se requiere la orientacion'),
+        canton: Yup.string().required('Se requiere el cantón'),
+        coef_reflexion: Yup.number().required('Se requiere el coeficiente de reflexión'),
+        inclinacion: Yup.number().required('se requiere la inclinación'),
+        orientacion: Yup.number().required('se requiere la orientación'),
         external: Yup.string().required('Se requiere el sitio'),
         tarifa: Yup.string().required('Se requiere la tarifa'),
         fuente: Yup.string().required('Se requiere la fuente'),
@@ -204,9 +205,9 @@ export default function Home() {
         eficiencia: Yup.number().required('Se requiere la eficiencia'),
         fs: Yup.number().required('Se requiere el factor de sombras'),
         rendimiento: Yup.number().required('Se requiere el rendimiento'),
-        costo_instalacion: Yup.number().required('Se requiere el costo de instalacion'),
+        costo_instalacion: Yup.number().required('Se requiere el costo de instalación'),
         consumo_mensual: Yup.number().required('Se requiere el consumo mensual'),
-        demanda_potencia_electronica: Yup.number().required('Se requiere la demanda de potencial electrico en KW')
+        demanda_potencia_electronica: Yup.number().required('Se requiere la demanda de potencial eléctrico en KW')
     });
 
     const onSubmit = (data) => {
@@ -458,9 +459,9 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione el canton</label>
+                                            <label>Seleccione el cantón</label>
                                             <select name="canton" {...register('canton')} className={`p-dropdown p-component p-inputtext ${errors.canton ? 'p-invalid' : ''}`} onChange={changeSelectOptionHandlerC}>
-                                                <option>Seleccione un canton</option>
+                                                <option>Seleccione un cantón</option>
                                                 {listaCanton.map((cant, i) => (
                                                     <option key={i} value={cant.external}>
                                                         {cant.nombre}
@@ -618,7 +619,10 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Angulo de Inclinación, b [º]</label>
+                                           	 <Tooltip target=".tool" content="Ángulo de Inclinación del Sistema Fotovoltaico y se recomienda un valor de 5 a 15°" position="top"  />
+
+						 <label className="tool">Ángulo de Inclinación, beta (°)</label>
+						
                                             <Knob
                                                 value={sliderAngulo}
                                                 valueTemplate={'{value}°'}
@@ -643,7 +647,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Orientación, a [º]</label>
+						 <Tooltip target=".toola" content="Orientación del Panel Fotovoltaico orientado al Ecuador Terrestre, se recomienda 0 de orientación si necesita cambiar" position="top"  />
+                                            <label className='toola'>Orientación, alfa (°)</label>
                                             <Knob
                                                 value={sliderInclinacion}
                                                 valueTemplate={'{value}°'}
@@ -668,7 +673,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Coeficiente de reflexion</label>
+					<Tooltip target=".toolb" content="Es el índice de luz en el piso que incide ene el panel, la nieve recien caída tiene un coeficiente de reflexion, se recomienda 0,2 " position="top"/>
+                                            <label className="toolb">Coeficiente de reflexión</label>
                                             <InputText value="0.2" name="coef_reflexion" readOnly type="text" {...register('coef_reflexion')} className={`${errors.coef_reflexion ? 'p-invalid' : ''}`} />
 
                                             <div className="p-error">{errors.coef_reflexion?.message}</div>
@@ -677,7 +683,7 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Potencia nominal del generador PNOM,G, [kWp]</label>
+                                            <label>Potencia nominal del generador [kWp]</label>
                                             <Slider
                                                 step={0.1}
                                                 value={sliderValuePotenciaNominal}
@@ -701,7 +707,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Eficiencia del panel fotovoltaico [%]</label>
+						<Tooltip target=".toolc" content="Se recomienda de 15 y 25%" pos="top"/>
+                                            <label className="toolc">Eficiencia del panel fotovoltaico [%]</label>
                                             <Knob
                                                 value={sliderEficiencia}
                                                 valueTemplate={'{value}%'}
@@ -726,7 +733,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Factor de sombras, FS, (0 - 1)</label>
+					<Tooltip target=".toold" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" pos="top"/>
+                                            <label className="toold">Factor de sombras, FS, (0 - 1)</label>
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -750,7 +758,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Rendimiento característico PR4, (0 - 1)</label>
+					<Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" pos="top"/>
+                                            <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0 - 1)</label>
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -775,7 +784,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Costo de compra e instalalción (USD/kW)</label>
+					<Tooltip target=".toolf" content="En el Ecuador el costo es 1500$ por KW, pero de 1000 A 3000 oscilar se puede" pos="top"/>
+                                            <label className="toolf">Costo de compra e instalalción (USD/kW)</label>
                                             <Slider
                                                 min={0}
                                                 max={10000}

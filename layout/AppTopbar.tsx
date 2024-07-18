@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Tooltip } from 'primereact/tooltip';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
+    const base_url = process.env.path;
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
@@ -26,10 +27,10 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         removeKey('token');
         removeKey('user');
         removeKey('permiso');    
-        router.push('/auth/login');    
+        router.push(base_url+'/auth/login');    
     }
     const base_only_images = process.env.path_only_images;
-    const base_url = process.env.path;
+    //const base_url = process.env.path;
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">

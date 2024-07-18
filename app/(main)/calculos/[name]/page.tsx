@@ -30,7 +30,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { Divider } from 'primereact/divider';
 
 import dynamic from 'next/dynamic';
-
+import { Tooltip } from 'primereact/tooltip';
 
 
 const Nosite = ({params}) => {
@@ -871,7 +871,8 @@ const Nosite = ({params}) => {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Angulo de Inclinación, b [º]</label>
+                                            <Tooltip target=".tool" content="Ángulo de Inclinación del Sistema Fotovoltaico y se recomienda un valor de 5 a 15°" position="top"  />
+						<label className="tool">Ángulo de Inclinación, beta (°)</label>
                                             <Knob
                                                 value={sliderAngulo}
                                                 valueTemplate={'{value}°'}
@@ -896,7 +897,9 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Orientación, a [º]</label>
+                                            <Tooltip target=".toola" content="Orientación del Panel Fotovoltaico orientado al Ecuador Terrestre, se recomienda 0 de orientación si necesita cambiar" position='top'/>
+                                            <label className='toola'>Orientación, alfa (°)</label>
+
                                             <Knob
                                                 value={sliderInclinacion}
                                                 valueTemplate={'{value}°'}
@@ -921,7 +924,8 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Coeficiente de reflexion</label>
+                                            <Tooltip target=".toolb" content="Es el índice de luz en el piso que incide ene el panel, la nieve recien caída tiene un coeficiente de reflexion, se recomienda 0,2 " position ="top"/>
+                                            <label className="toolb">Coeficiente de reflexión</label>
                                             <InputText value='0.2' name="coef_reflexion" readOnly type="text" {...register('coef_reflexion')} className={`${errors.coef_reflexion ? 'p-invalid' : ''}`} />
 
                                             <div className="p-error">{errors.coef_reflexion?.message}</div>
@@ -930,7 +934,7 @@ const Nosite = ({params}) => {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Potencia nominal del generador PNOM,G, [kWp]</label>
+                                            <label>Potencia nominal del generador [kWp]</label>
                                             <Slider
                                                 step={0.1}
                                                 value={sliderValuePotenciaNominal}
@@ -953,7 +957,9 @@ const Nosite = ({params}) => {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Eficiencia del panel fotovoltaico [%]</label>
+                                            <Tooltip target=".toolc" content="Se recomienda de 15 y 25%" pos="top"/>
+                                            <label className="toolc">Eficiencia del panel fotovoltaico [%]</label>
+
                                             <Knob
                                                 value={sliderEficiencia}
                                                 valueTemplate={'{value}%'}
@@ -978,7 +984,8 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Factor de sombras, FS, (0 - 1)</label>
+                                            <Tooltip target=".toold" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" pos="top"/>
+                                            <label className="toold">Factor de sombras, FS, (0 - 1)</label>
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -1002,7 +1009,9 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Rendimiento característico PR4, (0 - 1)</label>
+                                             <Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" pos="top"/>
+                                            <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0 - 1)</label>
+
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -1028,7 +1037,8 @@ const Nosite = ({params}) => {
                                     <div className="form-row">
                                         <div className="field p-fluid">
 
-                                            <label>Costo de compra e instalalción (USD/kW)</label>
+                                           <Tooltip target=".toolf" content="En el Ecuador el costo es 1500$ por KW, pero de 1000 A 3000 oscilar se puede" pos="top"/>
+                                            <label className="toolf">Costo de compra e instalalción (USD/kW)</label>
                                             <Slider
                                                 min={0}
                                                 max={10000}

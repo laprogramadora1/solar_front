@@ -1,8 +1,14 @@
 //let URL = "https://computacion.unl.edu.ec/pdml/solar_back/api/";
 let URL = process.env.api;//"http://localhost:5000/api/";
 export async function get(recurso) {
-    const response = await fetch(URL + recurso);
+   // const response = await fetch(URL + recurso);
     try {
+	
+	const header = {
+            "Content-Type": "application/json"
+        };
+	const response = await fetch(URL + recurso, {headers:header});
+
         const data = await response.json();
         return {
             props: {
