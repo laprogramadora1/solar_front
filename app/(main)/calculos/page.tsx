@@ -211,8 +211,13 @@ export default function Home() {
     });
 
     const onSubmit = (data) => {
+        console.log("+++++++++///////");
         var tar = listaTarifa.find((dat) => dat.external == data.tarifa);
-        //console.log(data.orientacion);
+        console.log("+++++++++");
+        console.log(tar);
+        if(tar != undefined) {
+
+        
         var datos = {
             coef_reflexion: data.coef_reflexion,
             inclinacion: data.inclinacion,
@@ -230,12 +235,15 @@ export default function Home() {
         };
 
         postCalculos(datos).then((info) => {
+            
+
             console.log(info);
             if (info.props.datos.message === 'OK') {
-                console.log('calculos');
+                myToast.current?.show({ severity: 'info', summary: 'Respuesta', detail: 'Cálculo realizado!' });
+                
                 var aux = info.props.datos.datos[0].calculos;
                 var aux1 = [];
-
+                
                 //chartDataIrradiacion
                 var plano_horizontal = [];
                 var plano_inclinado = [];
@@ -406,6 +414,10 @@ export default function Home() {
                 //setTitles([]);
             }
         });
+        }else{
+            
+            myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: 'Faltan campos por agregar' });
+        }
         //console.log(datos);
     };
 
@@ -427,7 +439,7 @@ export default function Home() {
     const URL_MEDIA = process.env.path_media;
 
     return (
-        <main className="col-12">
+        <div id="home" className="surface-0 flex justify-content-center col-12">
             <Toast ref={myToast} />
             <div className="card p-fluid">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -444,7 +456,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Provincia</label>
+
+                                            <label><b>Seleccione la provincia</b> </label>
 
                                             <select name="provincia" {...register('provincia')} className={`p-dropdown p-component p-inputtext ${errors.provincia ? 'p-invalid' : ''}`} onChange={changeSelectOptionHandlerP}>
                                                 <option>Seleccione una provincia</option>
@@ -459,7 +472,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione el cantón</label>
+                                            <label><b>Seleccione el cantón</b></label>
                                             <select name="canton" {...register('canton')} className={`p-dropdown p-component p-inputtext ${errors.canton ? 'p-invalid' : ''}`} onChange={changeSelectOptionHandlerC}>
                                                 <option>Seleccione un cantón</option>
                                                 {listaCanton.map((cant, i) => (
@@ -474,7 +487,7 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione la parroquia (lugar)</label>
+                                            <label><b>Seleccione la parroquia (lugar)</b></label>
                                             <select
                                                 name="external"
                                                 {...register('external', {
@@ -496,7 +509,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione la fuente</label>
+                                            <Tooltip target=".toolPr" content="Meteonorm:Contiene datos de horarios de radiación, NASA_SSE: Permite conocer los valores mediante la introducción de las coordenadas geográficas, NERL:Entrega datos de radiación solar" position="top" />
+                                            <label><b>Seleccione la fuente</b> <i className="pi pi-info-circle text  text-blue-500 toolPr" /> </label>
                                             <select
                                                 name="fuente"
                                                 {...register('fuente', {
@@ -529,7 +543,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione la tarifa</label>
+                                            <Tooltip target=".toolSt" content="Donde sus siglas B= baja; M= media;T= tensión; A= alta; SD= sin demanda; CD= con demanda" position="top" />
+                                            <label><b>Seleccione la tarifa</b> <i className="pi pi-info-circle text  text-blue-500 toolSt" /> </label>
                                             <select name="tarifa" {...register('tarifa')} onChange={changeSelectOptionTarifa} className={`p-dropdown p-inputtext ${errors.edificio ? 'p-invalid' : ''}`}>
                                                 <option>Seleccione la tarifa</option>
                                                 {listaTarifa.map((cant, i) => (
@@ -544,7 +559,7 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Seleccione el edificio</label>
+                                            <label><b>Seleccione el edificio (lugar)</b></label>
                                             <select name="edificio" {...register('edificio')} className={`p-dropdown p-inputtext ${errors.edificio ? 'p-invalid' : ''}`}>
                                                 <option>Seleccione el edificio</option>
                                                 {listaEdificio.map((cant, i) => (
@@ -558,7 +573,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Consumo eléctrico promedio mensual [kWh]</label>
+                                            <Tooltip target=".toolCepm" content="El consumo promedio de energía eléctrica se debe ingresar: 0 - 10000" position="top" />
+                                            <label><b>Consumo eléctrico promedio mensual [kWh]</b> <i className="pi pi-info-circle text text-blue-500 toolCepm" /> </label>
                                             <Slider
                                                 step={1}
                                                 min={0}
@@ -582,7 +598,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Demanda de potencia electrica [KW]</label>
+                                            <Tooltip target=".toolDdpe" content="cuánta electricidad consumes durante todo el periodo de facturación: 0 - 1000" position="top" />
+                                            <label><b>Demanda de potencia eléctrica [KW]</b> <i className="pi pi-info-circle text text-blue-500 toolDdpe" /> </label>
                                             <Slider
                                                 value={sliderDemanda}
                                                 onChange={(e) => {
@@ -619,10 +636,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                           	 <Tooltip target=".tool" content="Ángulo de Inclinación del Sistema Fotovoltaico y se recomienda un valor de 5 a 15°" position="top"  />
-
-						 <label className="tool">Ángulo de Inclinación, beta (°)</label>
-						
+                                            <Tooltip target=".toolAdI" content="Ángulo óptimo para captación solar se recomienda un valor: 5-15°" position="top" />
+                                            <label><b>Ángulo de Inclinación, β (BETA) (°)</b> <i className="pi pi-info-circle text text-blue-500 toolAdI" /> </label>
                                             <Knob
                                                 value={sliderAngulo}
                                                 valueTemplate={'{value}°'}
@@ -647,8 +662,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-						 <Tooltip target=".toola" content="Orientación del Panel Fotovoltaico orientado al Ecuador Terrestre, se recomienda 0 de orientación si necesita cambiar" position="top"  />
-                                            <label className='toola'>Orientación, alfa (°)</label>
+                                            <Tooltip target=".toolOdP" content="Orientado al Ecuador Terrestre, se recomienda 0° de orientación, modificar a su." position="top" />
+                                            <label><b>Orientación, α (ALFA) (°)</b> <i className="pi pi-info-circle text text-blue-500 toolOdP" /> </label>
                                             <Knob
                                                 value={sliderInclinacion}
                                                 valueTemplate={'{value}°'}
@@ -673,8 +688,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-					<Tooltip target=".toolb" content="Es el índice de luz en el piso que incide ene el panel, la nieve recien caída tiene un coeficiente de reflexion, se recomienda 0,2 " position="top"/>
-                                            <label className="toolb">Coeficiente de reflexión</label>
+                                            <Tooltip target=".toolCdR" content="Es el índice de luz en el piso que incide en el panel, la nieve recién caída tiene un coeficiente de reflexión de 0,9; eso significa que el 90% de la radiación que llega es reflejada. se recomienda 0,2 " position="top" />
+                                            <label><b>Coeficiente de reflexión</b> <i className="pi pi-info-circle text text-blue-500 toolCdR" /> </label>
                                             <InputText value="0.2" name="coef_reflexion" readOnly type="text" {...register('coef_reflexion')} className={`${errors.coef_reflexion ? 'p-invalid' : ''}`} />
 
                                             <div className="p-error">{errors.coef_reflexion?.message}</div>
@@ -683,7 +698,9 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Potencia nominal del generador [kWp]</label>
+                                            <Tooltip target=".toolPndG" content="Cantidad máxima de energía eléctrica:0-100" position="top" />
+                                            <label><b>Potencia nominal del generador [kWp]</b> <i className="pi pi-info-circle text text-blue-500 toolPndG" /> </label>
+
                                             <Slider
                                                 step={0.1}
                                                 value={sliderValuePotenciaNominal}
@@ -707,8 +724,9 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-						<Tooltip target=".toolc" content="Se recomienda de 15 y 25%" pos="top"/>
-                                            <label className="toolc">Eficiencia del panel fotovoltaico [%]</label>
+                                            <Tooltip target=".toolEdPF" content="Cuánta energía solar puede convertir en electricidad utilizable, se recomienda de 15 - 25%" position="top" />
+                                            <label><b>Eficiencia del panel fotovoltaico [%]</b> <i className="pi pi-info-circle text text-blue-500 toolEdPF" /> </label>
+
                                             <Knob
                                                 value={sliderEficiencia}
                                                 valueTemplate={'{value}%'}
@@ -733,8 +751,9 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-					<Tooltip target=".toold" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" pos="top"/>
-                                            <label className="toold">Factor de sombras, FS, (0 - 1)</label>
+                                            <Tooltip target=".toolFdS" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" position="top" />
+                                            <label><b>Factor de sombras, FS, (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolFdS" /> </label>
+
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -758,8 +777,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-					<Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" pos="top"/>
-                                            <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0 - 1)</label>
+                                            <Tooltip target=".toolPC" content="El sistema convierte entre el 75% y el 85% de la energía solar disponible en electricidad,se recomienda: 0.85" position="top" />
+                                            <label><b>Rendimiento característico PR (Performance ratio), (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolPC" /> </label>
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}
@@ -784,8 +803,9 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-					<Tooltip target=".toolf" content="En el Ecuador el costo es 1500$ por KW, pero de 1000 A 3000 oscilar se puede" pos="top"/>
-                                            <label className="toolf">Costo de compra e instalalción (USD/kW)</label>
+                                            <Tooltip target=".toolCdCI" content="En el Ecuador el costo de instalación de un sistema fotovoltaico es de aproximadamente $1,500 por kilovatio (kW). Si los costos oscilan entre $1,000 y $3,000 por kW, puede ser razonable " position="top" />
+                                            <label><b>Costo de compra e instalación (USD/kW)</b> <i className="pi pi-info-circle text text-blue-500 toolCdCI" /> </label>
+
                                             <Slider
                                                 min={0}
                                                 max={10000}
@@ -1000,6 +1020,6 @@ export default function Home() {
                     </DataTable>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

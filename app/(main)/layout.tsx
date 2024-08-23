@@ -76,9 +76,16 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href={URL + 'calculos/sinsitio'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                                        <span style={{ color: 'white' }}>
+                                            <b>Calculadora fotovoltaica sin sitio</b>
+                                        </span>
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href={URL + 'auth/login'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
                                         <span style={{ color: 'white' }}>
-                                            <b>Iniciar sesion</b>
+                                            <b>Iniciar sesión</b>
                                         </span>
                                     </Link>
                                 </li>

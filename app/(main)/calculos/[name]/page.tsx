@@ -545,8 +545,9 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Ingrese la irradiacion por mes</label>
-                                            <Fieldset legend="Ingrese irradiacion por mes" toggleable collapsed={true}>
+                                        <Tooltip target=".toolIlipm" content="Haga clik en el siguiente botón (Ingrese irradiación por mes)" position="top" />
+                                            <label><b>Ingrese la irradiacion por mes</b> <i className="pi pi-info-circle text  text-blue-500 toolIlipm" /> </label>
+                                            <Fieldset legend="Ingrese irradiacion por mes (kWh/m²)" toggleable collapsed={true}>
 
                                                 <div className="flex flex-column md:flex-row">
                                                     <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
@@ -748,7 +749,7 @@ const Nosite = ({params}) => {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <label>Ingrese irradiacion del total sitio</label>
+                                            <label>Ingrese irradiación del total sitio</label>
                                             <InputText {...register('irradiacion')} name="irradiacion" type="text" className={`form-control ${errors.irradiacion ? 'p-invalid' : ''}`} />
                                             <div className="p-error">{errors.irradiacion?.message}</div>
 
@@ -957,7 +958,7 @@ const Nosite = ({params}) => {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolc" content="Se recomienda de 15 y 25%" pos="top"/>
+                                            <Tooltip target=".toolc" content="Se recomienda de 15 y 25%" position="top"/>
                                             <label className="toolc">Eficiencia del panel fotovoltaico [%]</label>
 
                                             <Knob
@@ -984,7 +985,7 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toold" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" pos="top"/>
+                                            <Tooltip target=".toold" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" position="top"/>
                                             <label className="toold">Factor de sombras, FS, (0 - 1)</label>
                                             <Slider
                                                 min={0.0}
@@ -1009,7 +1010,7 @@ const Nosite = ({params}) => {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                             <Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" pos="top"/>
+                                             <Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" position="top"/>
                                             <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0 - 1)</label>
 
                                             <Slider
@@ -1037,7 +1038,7 @@ const Nosite = ({params}) => {
                                     <div className="form-row">
                                         <div className="field p-fluid">
 
-                                           <Tooltip target=".toolf" content="En el Ecuador el costo es 1500$ por KW, pero de 1000 A 3000 oscilar se puede" pos="top"/>
+                                           <Tooltip target=".toolf" content="En el Ecuador el costo es 1500$ por KW, pero de 1000 A 3000 oscilar se puede" position="top"/>
                                             <label className="toolf">Costo de compra e instalalción (USD/kW)</label>
                                             <Slider
                                                 min={0}

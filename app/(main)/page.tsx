@@ -35,7 +35,7 @@ const LandingPage = () => {
                     <h2 className="text-4xl text-center font-bold text-gray-900 line-height-2">
                         <span className="font-light block">CALCULADORA SOLAR FOTOVOLTAICA</span>
                     </h2>
-                    <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">Simula, recibe tu presupuesto y empieza a ahorrar. </p>
+                    
                     <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">
                         Simula, recibe tu presupuesto y empieza a ahorrar. En base a un valor de consumo medio, te presentaremos una solución para ahorrar en tu factura eléctrica.{' '}
                     </p>
@@ -102,7 +102,7 @@ const LandingPage = () => {
                                     <i className="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
                                 </div>
                                 <h5 className="mb-2 text-900">Graficas</h5>
-                                <span className="text-600">Permite analizar los valores en graficas.</span>
+                                <span className="text-600">Permite analizar las graficas generadas por la simulacion.</span>
                             </div>
                         </div>
                     </div>

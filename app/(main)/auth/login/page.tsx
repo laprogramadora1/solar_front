@@ -20,6 +20,7 @@ import { add, isSession } from '../../../../hooks/utiles/utiles';
 import message from '../../../../component/message';
 
 const LoginPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const base_url = process.env.path;
     const [checked, setChecked] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
@@ -42,9 +43,11 @@ const LoginPage = () => {
     const sendInfo = (datos) => {
         //let datitos = datos;
         const datito = { correo: datos.correo, clave: datos.clave };
+        setIsLoading(true);
         sesion(datito).then((data) => {
             const info = data.props.datos;
             if (info.code == '200') {
+                setIsLoading(false);
                 myToast.current?.show({ severity: 'success', summary: 'Respuesta', detail: info.msg });
                 console.log(info);
                 add('token', info.datos.token);
@@ -59,6 +62,7 @@ const LoginPage = () => {
                 //router.replace(base_url + "dashboard", { scroll: false });
                 //redirect(base_url + "dashboard");
             } else {
+                setIsLoading(false);
                 myToast.current?.show({ severity: 'error', summary: 'Respuesta', detail: info.datos });
             }
         });
@@ -100,9 +104,9 @@ const LoginPage = () => {
                                 <Divider />
                                 <div>
                                     <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
-                                        Correo electronico
+                                        Correo electrónico
                                     </label>
-                                    <InputText id="email1" type="text" {...register('correo')} placeholder="Ingrese el Correo electronico" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
+                                    <InputText id="email1" type="text" {...register('correo')} placeholder="Ingrese el Correo electrónico" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
                                 </div>
                                 <div>
                                     <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
@@ -128,7 +132,17 @@ const LoginPage = () => {
                                         Regresar al inicio
                                     </a>
                                 </div>
-                                <Button label="Inicio de sesion" type="submit" className="w-full p-3 text-xl"></Button>
+                                <Button label={isLoading ? '' : ' Ingresar'} type="submit" className="w-full p-3 text-xl" disabled={isLoading}>
+                                {isLoading && <i className='pi pi-spin pi-spinner'
+                                        style={{
+                                            fontSize: '1.5rem',
+                                            justifyContent:'center',
+                                            alignContent: 'center',
+                                            display: 'flex'
+                                        }}></i>}
+                                </Button>
+                               
+                            
                             </div>
                         </form>
                     </div>
