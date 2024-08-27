@@ -12,6 +12,11 @@ import { NodeRef } from '../../types/types';
 import { classNames } from 'primereact/utils';
 import { isSession } from '../../hooks/utiles/utiles';
 import { useRouter } from 'next/navigation';
+import Layout from '../../layout/layout';
+import 'primereact/resources/primereact.css';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
+
 interface SimpleLayoutProps {
     children: React.ReactNode;
 }
@@ -69,6 +74,13 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link href={URL + 'about/paper'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                                        <span style={{ color: 'white' }}>
+                                            <b>Información</b>
+                                        </span>
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href={URL + 'calculos'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
                                         <span style={{ color: 'white' }}>
                                             <b>Calculadora fotovoltaica</b>
@@ -79,6 +91,13 @@ export default function SimpleLayout({ children }: SimpleLayoutProps) {
                                     <Link href={URL + 'calculos/sinsitio'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
                                         <span style={{ color: 'white' }}>
                                             <b>Calculadora fotovoltaica sin sitio</b>
+                                        </span>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href={URL + 'about'} className="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                                        <span style={{ color: 'white' }}>
+                                            <b>Acerca de</b>
                                         </span>
                                     </Link>
                                 </li>

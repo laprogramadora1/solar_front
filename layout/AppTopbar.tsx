@@ -31,9 +31,10 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     }
     const base_only_images = process.env.path_only_images;
     //const base_url = process.env.path;
+    const URL = process.env.path;
     return (
         <div className="layout-topbar">
-            <Link href="/" className="layout-topbar-logo">
+            <Link href={URL} className="layout-topbar-logo">
                 <img src={base_only_images+`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
                 <span>Calculadora solar. Administrador</span>
             </Link>

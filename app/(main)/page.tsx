@@ -19,7 +19,7 @@ const LandingPage = () => {
     useEffect(() => {
         inicio().then((data) => {});
     }, []);
-
+    const URL_MEDIA = process.env.path;
     return (
         <div id="home" className="landing-wrapper overflow-hidden">
             <div
@@ -39,7 +39,7 @@ const LandingPage = () => {
                     <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">
                         Simula, recibe tu presupuesto y empieza a ahorrar. En base a un valor de consumo medio, te presentaremos una solución para ahorrar en tu factura eléctrica.{' '}
                     </p>
-                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href="/sfv/calculos">
+                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href={URL_MEDIA+"calculos"}>
                         Calculadora
                     </Link>
                 </div>
@@ -157,7 +157,7 @@ const LandingPage = () => {
                             <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style={{ maxWidth: '800px' }}>
                                 “Desarrolladora: Elizabeth Urena”
                             </p>
-                            <img src="/sfv/img/logo_computacion.jpg" style={{ width: '150px' }} className="mt-4" alt="Company logo" />
+                            <img src={URL_MEDIA+"img/logo_computacion.jpg"} style={{ width: '150px' }} className="mt-4" alt="Company logo" />
                         </div>
                     </div>
                 </div>
@@ -166,8 +166,8 @@ const LandingPage = () => {
             <div className="py-4 px-4 mx-0 mt-8 lg:mx-8">
                 <div className="grid justify-content-between">
                     <div className="col-12 md:col-2" style={{ marginTop: '-1.5rem' }}>
-                        <Link href="/" className="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
-                            <img src={`/sfv/layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
+                        <Link href={URL_MEDIA} className="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
+                            <img src={URL_MEDIA+`layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
                             <span className="font-medium text-3xl text-900">Energia solar</span>
                         </Link>
                     </div>
@@ -176,10 +176,10 @@ const LandingPage = () => {
                         <div className="grid text-center md:text-left">
                             <div className="col-12 md:col-3">
                                 <h4 className="font-medium text-2xl line-height-3 mb-3 text-900">Sitio</h4>
-                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/sfv">
+                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href={URL_MEDIA}>
                                     Inicio
                                 </Link>
-                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href="/sfv/calculos">
+                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href={URL_MEDIA+"calculos"}>
                                     Calculadora
                                 </Link>
                             </div>

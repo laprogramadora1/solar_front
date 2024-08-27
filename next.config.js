@@ -4,7 +4,7 @@ const nextConfig = {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
-    // !! WARN !!
+    // !! WARN !! 
     ignoreBuildErrors: true,
   },    
     assetPrefix: 'https://computacion.unl.edu.ec/sfv',
@@ -15,9 +15,13 @@ const nextConfig = {
         path: '/sfv/',
         path_only_images: '/sfv',
         
+        //path_media: '/img/',        
+        //api: 'https://computacion.unl.edu.ec/sfv/api/',        
+        //path: '/',
+        //path_only_images: '',
     }
     
 
 }
-
+//81
 module.exports = nextConfig
