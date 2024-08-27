@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Fieldset } from 'primereact/fieldset';
 import { Image } from 'primereact/image';
 const AboutPage = () => {
-    const URL_MEDIA = process.env.path_only_images;
+    const URL_MEDIA = process.env.path_only_images+"/";
 
 
     return (
