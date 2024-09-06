@@ -17,7 +17,7 @@ const LandingPage = () => {
     };
 
     useEffect(() => {
-        inicio().then((data) => {});
+        inicio().then((data) => { });
     }, []);
     const URL_MEDIA = process.env.path;
     return (
@@ -35,11 +35,11 @@ const LandingPage = () => {
                     <h2 className="text-4xl text-center font-bold text-gray-900 line-height-2">
                         <span className="font-light block">CALCULADORA SOLAR FOTOVOLTAICA</span>
                     </h2>
-                    
+
                     <p className="font-normal text-1xl line-height-3 md:mt-3 text-gray-700">
                         Simula, recibe tu presupuesto y empieza a ahorrar. En base a un valor de consumo medio, te presentaremos una solución para ahorrar en tu factura eléctrica.{' '}
                     </p>
-                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href={URL_MEDIA+"calculos"}>
+                    <Link className="p-button text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white" href={URL_MEDIA + "calculos"}>
                         Calculadora
                     </Link>
                 </div>
@@ -52,7 +52,7 @@ const LandingPage = () => {
                 <div className="grid justify-content-center">
                     <div className="col-12 text-center mt-8 mb-4">
                         <h2 className="text-900 font-normal mb-2">Sistema fotovoltaico</h2>
-                        
+
                     </div>
 
                     <div className="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
@@ -101,8 +101,8 @@ const LandingPage = () => {
                                 >
                                     <i className="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
                                 </div>
-                                <h5 className="mb-2 text-900">Graficas</h5>
-                                <span className="text-600">Permite analizar las graficas generadas por la simulacion.</span>
+                                <h5 className="mb-2 text-900">Gráficas</h5>
+                                <span className="text-600">Permite analizar las gráficas generadas por la simulación.</span>
                             </div>
                         </div>
                     </div>
@@ -127,37 +127,42 @@ const LandingPage = () => {
                                 >
                                     <i className="pi pi-fw pi-map text-2xl text-indigo-700"></i>
                                 </div>
-                                <h5 className="mb-2 text-900">Haz tus calculos fotovoltaicos</h5>
-                                <span className="text-600">El sistema permite calcular el ahorro energetico al implantar un sistema fotovoltaico.</span>
+                                <h5 className="mb-2 text-900">Haz tus cálculos fotovoltaicos</h5>
+                                <span className="text-600">El sistema permite calcular el ahorro energético al implantar un sistema fotovoltaico.</span>
                             </div>
                         </div>
                     </div>
 
-                           
 
-                    
 
-                    
 
-			
-                        <div className="col-12 mt-8 mb-8 p-2 md:p-8"
 
-                            style={{
-                                
-                                
-                                borderRadius: '20px',
-                                background: 'linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(251, 199, 145, 0.2), rgba(160, 210, 250, 0.2))'
-                            }}
-                        >                    
 
-                    
+
+
+                    <div className="col-12 mt-8 mb-8 p-2 md:p-8"
+
+                        style={{
+
+
+                            borderRadius: '20px',
+                            background: 'linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(251, 199, 145, 0.2), rgba(160, 210, 250, 0.2))'
+                        }}
+                    >
+
+
                         <div className="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
-                            <h3 className="text-gray-900 mb-2">Pagina realizado por:</h3>
-                            <span className="text-gray-600 text-2xl">Carrera de computacion</span>
+                            <h3 className="text-gray-900 mb-2">Página realizada por:</h3>
+                            <span className="text-gray-600 text-2xl">Carrera de Computación</span>
                             <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style={{ maxWidth: '800px' }}>
-                                “Desarrolladora: Elizabeth Urena”
+                                “Desarrolladora: Elizabeth Ureña”
                             </p>
-                            <img src={URL_MEDIA+"img/logo_computacion.jpg"} style={{ width: '150px' }} className="mt-4" alt="Company logo" />
+
+                            
+                            <div className="flex gap-4 mt-4">
+                                <img src={URL_MEDIA + "img/logo_computacion.jpg"} style={{ width: '150px' }} alt="Logo Computación" />
+                                <img src={URL_MEDIA + "img/escudo_unl.png"} style={{ width: '150px',height:'auto'}} alt="Logo UNL" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,8 +172,8 @@ const LandingPage = () => {
                 <div className="grid justify-content-between">
                     <div className="col-12 md:col-2" style={{ marginTop: '-1.5rem' }}>
                         <Link href={URL_MEDIA} className="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
-                            <img src={URL_MEDIA+`layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
-                            <span className="font-medium text-3xl text-900">Energia solar</span>
+                            <img src={URL_MEDIA + `layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
+                            <span className="font-medium text-3xl text-900">Energía solar</span>
                         </Link>
                     </div>
 
@@ -179,7 +184,7 @@ const LandingPage = () => {
                                 <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href={URL_MEDIA}>
                                     Inicio
                                 </Link>
-                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href={URL_MEDIA+"calculos"}>
+                                <Link className="line-height-3 text-xl block cursor-pointer mb-2 text-700" href={URL_MEDIA + "calculos"}>
                                     Calculadora
                                 </Link>
                             </div>
