@@ -34,6 +34,11 @@ const AboutPage = () => {
                                 <p>
                                     <b>Línea de investigación:</b>Energía Solar Fotovoltaica
                                 </p>
+                                 
+                                <p>
+                                <a href="mailto:juan.solano@unl.edu.ec">juan.solano@unl.edu.ec</a> 
+                             
+                                </p>
                             </div>
                         </Fieldset>
                     </div>
@@ -46,7 +51,7 @@ const AboutPage = () => {
                         <Fieldset legend="Ángel José Ordóñez Mendieta" toggleable collapsed={true}>
                             <div className="form-group row" style={{ marginBottom: "10px" }}>
                                 <div className="flex justify-content-center">
-                                    <Image src={URL_MEDIA + 'photo/angel_ordonez.jpg'} alt="Image" width="250" preview />
+                                    <Image src={URL_MEDIA + 'photo/ordonez.jpg'} alt="Image" width="250" preview />
                                 </div>
                                 <p>
                                     Ingeniero en Electrónica y Telecomunicaciones.
@@ -60,6 +65,13 @@ const AboutPage = () => {
                                 <p>
                                     <b>Línea de investigación:</b>Energía Solar Fotovoltaica
                                 </p>
+                               
+                                
+                                <p>
+                                <a href="mailto:angel.j.ordonez@unl.edu.ec">angel.j.ordonez@unl.edu.ec</a> 
+                             
+                                </p>
+
                             </div>
                         </Fieldset>
                     </div>
@@ -85,7 +97,11 @@ const AboutPage = () => {
                                     Doctor en Ciencias Técnicas.
                                 </p>
                                 <p>
-                                    <b>Línea de investigación:</b>Ingeniería de Materiales
+                                    <b>Línea de investigación:</b>Energía Solar Fotovoltaica
+                                </p>
+                                <p>
+                                <a href="mailto:miguel.caraballo@unl.edu.ec">miguel.caraballo@unl.edu.ec</a> 
+                             
                                 </p>
                             </div>
                         </Fieldset>
@@ -99,18 +115,20 @@ const AboutPage = () => {
                         <Fieldset legend="Valeria del Rosario Herrera Salazar" toggleable collapsed={true}>
                             <div className="form-group row" style={{ marginBottom: "10px" }}>
                                 <div className="flex justify-content-center">
-                                    <Image src={URL_MEDIA + 'photo/valeria.png'} alt="Image" width="250" preview />
+                                    <Image src={URL_MEDIA + 'photo/valeria1.jpg'} alt="Image" width="250" preview />
                                 </div>
                                 <p>
 
-                                    Ingeniero en sistemas.
+                                Docente Titular de la Universidad Nacional de Loja.
                                 </p>
                                 <p>
-                                    Master of Engineering.
+                                Profesora de Auditoría en Sistemas,
                                 </p>
-
                                 <p>
-                                    <b>Línea de investigación:</b>Energía Solar Fotovoltaica
+                                Ingeniería.
+                                </p>
+                                <p>
+                                <a href="mailto:vherrera@unl.edu.ec">vherrera@unl.edu.ec</a> 
                                 </p>
                             </div>
                         </Fieldset>
@@ -118,59 +136,8 @@ const AboutPage = () => {
                 </div>
             </div>
 
-            <div className="col-6  md:col-6">
-                <div className="card">
-                    <div>
-                        <Fieldset legend="Edgar Rafael Rivas Celi" toggleable collapsed={true}>
-                            <div className="form-group row" style={{ marginBottom: "10px" }}>
-                                <div className="flex justify-content-center">
-                                    <Image src={URL_MEDIA + 'photo/foto.png'} alt="Image" width="250" preview />
-                                </div>
-                                <p>
+           
 
-                                    INGENIERO ELECTROMECÁNICO.
-                                </p>
-                                <p>
-                                    Master en
-                                </p>
-
-                                <p>
-                                    <b>Línea de investigación:</b>Energía Solar Fotovoltaica
-                                </p>
-                            </div>
-                        </Fieldset>
-                    </div>
-                </div>
-            </div>
-            
-
-            <div className="col-6  md:col-6">
-                <div className="card">
-                    <div>
-                        <Fieldset legend="Carlos Raúl Barreto Calle" toggleable collapsed={true}>
-                            <div className="form-group row" style={{ marginBottom: "10px" }}>
-                                <div className="flex justify-content-center">
-                                    <Image src={URL_MEDIA + 'photo/barreto.jpg'} alt="Image" width="250" preview />
-                                </div>
-                                <p>
-
-
-                                    Ingeniero Eléctrico.
-                                </p>
-                                <p>
-                                    Magíster en Administración de Empresas.
-                                </p>
-                                <p>
-                                    Máster en Ingeniería en Energía
-                                </p>
-                                <p>
-                                    <b>Línea de investigación:</b>Programación estocástica, eficiencia energética
-                                </p>
-                            </div>
-                        </Fieldset>
-                    </div>
-                </div>
-            </div>
 
         </div>
     );

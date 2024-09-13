@@ -509,8 +509,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolPr" content="Meteonorm:Contiene datos de horarios de radiación, NASA_SSE: Permite conocer los valores mediante la introducción de las coordenadas geográficas, NERL:Entrega datos de radiación solar" position="top" />
-                                            <label><b>Seleccione la fuente</b> <i className="pi pi-info-circle text  text-blue-500 toolPr" /> </label>
+                                            
+                                            <label><b>Seleccione la fuente</b> </label>
                                             <select
                                                 name="fuente"
                                                 {...register('fuente', {
@@ -573,7 +573,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolCepm" content="El consumo promedio de energía eléctrica se debe ingresar: 0 - 10000" position="top" />
+                                            <Tooltip target=".toolCepm" content="El consumo promedio de energía eléctrica se debe ingresar: 0 - 10000 kWh" position="top" />
                                             <label><b>Consumo eléctrico promedio mensual [kWh]</b> <i className="pi pi-info-circle text text-blue-500 toolCepm" /> </label>
                                             <Slider
                                                 step={1}
@@ -598,7 +598,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolDdpe" content="cuánta electricidad consumes durante todo el periodo de facturación: 0 - 1000" position="top" />
+                                            <Tooltip target=".toolDdpe" content="cuando en la factura eléctrica existe demanda de potencia, consumes durante todo el periodo de facturación: 0 - 1000" position="top" />
                                             <label><b>Demanda de potencia eléctrica [KW]</b> <i className="pi pi-info-circle text text-blue-500 toolDdpe" /> </label>
                                             <Slider
                                                 value={sliderDemanda}
@@ -636,8 +636,8 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolAdI" content="Ángulo óptimo para captación solar se recomienda un valor: 5-15°" position="top" />
-                                            <label><b>Ángulo de Inclinación, β (BETA) (°)</b> <i className="pi pi-info-circle text text-blue-500 toolAdI" /> </label>
+                                            <Tooltip target=".toolAdI" content="Ángulo óptimo para captación solar, entre 5°-15°" position="top" />
+                                            <label><b>Ángulo de Inclinación (°)</b> <i className="pi pi-info-circle text text-blue-500 toolAdI" /> </label>
                                             <Knob
                                                 value={sliderAngulo}
                                                 valueTemplate={'{value}°'}
@@ -662,8 +662,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolOdP" content="Orientado al Ecuador Terrestre, se recomienda 0° de orientación, modificar a su." position="top" />
-                                            <label><b>Orientación, α (ALFA) (°)</b> <i className="pi pi-info-circle text text-blue-500 toolOdP" /> </label>
+                                            <Tooltip target=".toolOdP" content="Orientado al ecuador terrestre, se recomienda 0° de orientación." position="top" />
+                                            <label><b>Orientación (°)</b> <i className="pi pi-info-circle text text-blue-500 toolOdP" /> </label>
                                             <Knob
                                                 value={sliderInclinacion}
                                                 valueTemplate={'{value}°'}
@@ -688,7 +688,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolCdR" content="Es el índice de luz en el piso que incide en el panel, la nieve recién caída tiene un coeficiente de reflexión de 0,9; eso significa que el 90% de la radiación que llega es reflejada. se recomienda 0,2 " position="top" />
+                                            <Tooltip target=".toolCdR" content="Es el índice de luz en el suelo que incide en el panel, la nieve recién caída tiene un coeficiente de reflexión de 0.9. Se recomienda de 0 a 1" position="top" />
                                             <label><b>Coeficiente de reflexión</b> <i className="pi pi-info-circle text text-blue-500 toolCdR" /> </label>
                                             <InputText value="0.2" name="coef_reflexion" readOnly type="text" {...register('coef_reflexion')} className={`${errors.coef_reflexion ? 'p-invalid' : ''}`} />
 
@@ -698,7 +698,7 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolPndG" content="Cantidad máxima de energía eléctrica:0-100" position="top" />
+                                            <Tooltip target=".toolPndG" content="Cantidad máxima de potencia del sistema fotovoltaico; energía eléctrica: 0-100" position="top" />
                                             <label><b>Potencia nominal del generador [kWp]</b> <i className="pi pi-info-circle text text-blue-500 toolPndG" /> </label>
 
                                             <Slider
@@ -724,7 +724,7 @@ export default function Home() {
 
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolEdPF" content="Cuánta energía solar puede convertir en electricidad utilizable, se recomienda de 15 - 25%" position="top" />
+                                            <Tooltip target=".toolEdPF" content="Energía solar que se convierte en energía eléctrica, actualmente los paneles tienen entre el 15% - 25%" position="top" />
                                             <label><b>Eficiencia del panel fotovoltaico [%]</b> <i className="pi pi-info-circle text text-blue-500 toolEdPF" /> </label>
 
                                             <Knob
@@ -751,7 +751,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolFdS" content="Es el porcentaje de la superficie de SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" position="top" />
+                                            <Tooltip target=".toolFdS" content="Es el porcentaje de la superficie del SFV cubierto por sombras, se recomienda 0 sin sombras y 1 cuando esta cubierta de sombras" position="top" />
                                             <label><b>Factor de sombras, FS, (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolFdS" /> </label>
 
                                             <Slider
@@ -777,7 +777,7 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolPC" content="El sistema convierte entre el 75% y el 85% de la energía solar disponible en electricidad,se recomienda: 0.85" position="top" />
+                                            <Tooltip target=".toolPC" content="El sistema convierte aproximadamente entre el 75% y 90% de la energía pronosticada en energía utilizable,se recomienda: 0.85" position="top" />
                                             <label><b>Rendimiento característico PR (Performance ratio), (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolPC" /> </label>
                                             <Slider
                                                 min={0.0}

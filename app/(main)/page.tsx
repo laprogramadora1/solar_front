@@ -152,16 +152,23 @@ const LandingPage = () => {
 
 
                         <div className="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
-                            <h3 className="text-gray-900 mb-2">Página realizada por:</h3>
-                            <span className="text-gray-600 text-2xl">Carrera de Computación</span>
+                            <h3 className="text-gray-900 mb-2">Página desarrollada por:</h3>
+
                             <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style={{ maxWidth: '800px' }}>
-                                “Desarrolladora: Elizabeth Ureña”
+                                Elizabeth Ureña
+                                <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4">
+                                    <h3 className="text-gray-900 mb-2">Carrera de Computación</h3>
+                                    
+                                    <p className="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style={{ maxWidth: '800px' }}>
+                                        Director: Ing. Jose Guamán
+                                    </p>
+                                </p>
                             </p>
 
-                            
+
                             <div className="flex gap-4 mt-4">
                                 <img src={URL_MEDIA + "img/logo_computacion.jpg"} style={{ width: '150px' }} alt="Logo Computación" />
-                                <img src={URL_MEDIA + "img/escudo_unl.png"} style={{ width: '150px',height:'auto'}} alt="Logo UNL" />
+                                <img src={URL_MEDIA + "img/escudo_unl.png"} style={{ width: '150px', height: 'auto' }} alt="Logo UNL" />
                             </div>
                         </div>
                     </div>
