@@ -1,6 +1,7 @@
 'use client';
 import { decode as base64_decode, encode as base64_encode } from 'base-64';
 //var utf8 = require('utf8');
+//import  '../../styles/global.css';
 import { encode, decode } from 'utf8';
 import { useRef, useState } from 'react';
 import { Chart } from 'primereact/chart';
@@ -777,8 +778,8 @@ export default function Home() {
                                     </div>
                                     <div className="form-row">
                                         <div className="field p-fluid">
-                                            <Tooltip target=".toolPC" content="El sistema convierte aproximadamente entre el 75% y 90% de la energía pronosticada en energía utilizable,se recomienda: 0.85" position="top" />
-                                            <label><b>Rendimiento característico PR (Performance ratio), (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolPC" /> </label>
+                                            <Tooltip target=".toolPC" content="Rendimiento característico:El sistema convierte aproximadamente entre el 75% y 90% de la energía pronosticada en energía utilizable,se recomienda: 0.85" position="top" />
+                                            <label><b>PR4(Performance ratio), (0 - 1)</b> <i className="pi pi-info-circle text text-blue-500 toolPC" /> </label>
                                             <Slider
                                                 min={0.0}
                                                 max={1.0}

@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { StyleClass } from 'primereact/styleclass';
-
+import  'styles/global.css';
 import { LayoutContext } from '../../layout/context/layoutcontext';
 import { NodeRef } from '../../types/types';
 import { classNames } from 'primereact/utils';

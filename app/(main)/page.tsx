@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-
+import  'styles/global.css';
 import { LayoutContext } from '../../layout/context/layoutcontext';
 
 import { inicio } from '../../hooks/servicios';

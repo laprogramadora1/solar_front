@@ -1011,7 +1011,7 @@ const Nosite = ({params}) => {
                                     <div className="form-row">
                                         <div className="field p-fluid">
                                              <Tooltip target=".toole" content="Se recomienda 0,7 y 1, se recomienda 0,85" position="top"/>
-                                            <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0 - 1)</label>
+                                            <label className="toole">Rendimiento característico PR4 (Perfonce Ration), (0-1)</label>
 
                                             <Slider
                                                 min={0.0}
